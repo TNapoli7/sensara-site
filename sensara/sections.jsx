@@ -81,6 +81,15 @@ function Hero() {
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 w-full h-screen overflow-hidden" style={{background:'#0d0d0d'}}>
+        {/* Suede texture revealed behind hero as window shrinks */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          opacity: Math.min(1, prog * 2.5),
+          transition: 'opacity 0.1s',
+        }}>
+          <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{opacity: 0.18, filter:'brightness(0.6) contrast(1.3)'}}/>
+        </div>
         {/* Video stage */}
         <div
           className="absolute inset-0 will-change-transform"
@@ -285,6 +294,92 @@ function TechStatement() {
   );
 }
 
+/* ————————————————— SECTION: THE TOUCH — sensory reveal ————————————————— */
+function TheTouch() {
+  const sectionRef = useRef(null);
+  const [mouse, setMouse] = useState({ x: -200, y: -200 });
+  const [isInside, setIsInside] = useState(false);
+
+  const handleMouseMove = useCallback((e) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="section-overlap relative overflow-hidden"
+      style={{
+        height: '100vh', minHeight:'600px',
+        borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2,
+        cursor: 'none',
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsInside(true)}
+      onMouseLeave={() => { setIsInside(false); setMouse({ x: -200, y: -200 }); }}
+    >
+      {/* Base layer — dimmed suede texture */}
+      <div className="absolute inset-0">
+        <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{filter:'brightness(0.25) contrast(1.2)', transform:'scale(1.1)'}}/>
+      </div>
+
+      {/* Revealed layer — bright suede that shows through the cursor circle */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        clipPath: isInside
+          ? `circle(120px at ${mouse.x}px ${mouse.y}px)`
+          : `circle(0px at ${mouse.x}px ${mouse.y}px)`,
+        transition: isInside ? 'clip-path 0.08s ease-out' : 'clip-path 0.4s ease-in',
+      }}>
+        <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{filter:'brightness(1.1) contrast(1.15) saturate(1.2)', transform:'scale(1.1)'}}/>
+        {/* Soft edge glow inside the reveal circle */}
+        <div className="absolute inset-0" style={{
+          background: `radial-gradient(circle 120px at ${mouse.x}px ${mouse.y}px, rgba(38,109,241,0.08), transparent 70%)`,
+        }}/>
+      </div>
+
+      {/* Custom cursor ring */}
+      {isInside && (
+        <div className="absolute pointer-events-none z-30" style={{
+          left: mouse.x - 120, top: mouse.y - 120,
+          width: 240, height: 240,
+          border: '1px solid rgba(255,255,255,0.2)',
+          borderRadius: '50%',
+          transition: 'opacity 0.3s',
+        }}/>
+      )}
+
+      {/* Center content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
+        <Reveal>
+          <div className="eyebrow mb-6 text-white/50">The Sensara Experience</div>
+        </Reveal>
+        <Reveal delay={100}>
+          <h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white mb-6">
+            Designed to be<br/><span className="text-azure">Felt.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={200}>
+          <p className="text-lg md:text-xl text-white/60 max-w-lg font-light" style={{textWrap:'pretty'}}>
+            Move your cursor across the surface. The way light shifts reveals the depth of every fiber — just like running your hand across real suede.
+          </p>
+        </Reveal>
+      </div>
+
+      {/* Bottom hint */}
+      <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none z-20">
+        <span className="mono text-[10px] tracking-[0.25em] uppercase text-white/30">
+          [ explore the texture ]
+        </span>
+      </div>
+    </section>
+  );
+}
+
 /* ————————————————— SECTION 3: PRODUCT TYPES ————————————————— */
 const PRODUCTS = [
   {
@@ -329,59 +424,58 @@ const PRODUCTS = [
 function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
   const isActive = hovered === idx;
   const isCompressed = anyHovered && !isActive;
-  // Flex grow: active=60, compressed=13 (sums ~100), default=25
   const flex = isActive ? 60 : isCompressed ? 13 : 25;
+  const panelRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
-  // Per-panel texture
-  const textures = {
-    '01': {
-      bg: 'radial-gradient(ellipse at 30% 30%, #3a3a3a, #151515 70%), #1a1a1a',
-      overlay: 'radial-gradient(circle, rgba(255,255,255,.28) 1px, transparent 1.6px)',
-      overlaySize: '14px 14px',
-    },
-    '02': {
-      bg: 'radial-gradient(ellipse at 60% 40%, #343434, #121212 70%), #181818',
-      overlay: 'repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 2px, transparent 2px 5px), repeating-linear-gradient(-45deg, rgba(0,0,0,.25) 0 1px, transparent 1px 3px)',
-      overlaySize: 'auto',
-    },
-    '03': {
-      bg: 'radial-gradient(ellipse at 40% 30%, rgba(38,109,241,.55), rgba(10,18,46,1) 65%), #0a1432',
-      overlay: 'repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 2px, transparent 2px 5px)',
-      overlaySize: 'auto',
-    },
-    '04': {
-      bg: 'radial-gradient(ellipse at 50% 50%, #3a3238, #161217 70%), #1a1418',
-      overlay: 'repeating-linear-gradient(45deg, transparent 0 7px, rgba(255,255,255,.08) 7px 8px)',
-      overlaySize: 'auto',
-    },
+  // Per-panel color overlay for the texture
+  const tints = {
+    '01': 'rgba(26,26,26,0.75)',       // neutral dark
+    '02': 'rgba(20,22,28,0.75)',       // cool dark
+    '03': 'rgba(10,20,50,0.65)',       // azure dark
+    '04': 'rgba(28,18,24,0.72)',       // warm dark
   };
-  const tx = textures[p.code];
+
+  const handleMouseMove = useCallback((e) => {
+    const rect = panelRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
+  }, []);
 
   return (
     <div
+      ref={panelRef}
       onMouseEnter={()=>setHovered(idx)}
       onMouseLeave={()=>setHovered(null)}
+      onMouseMove={handleMouseMove}
       className="relative h-full cursor-pointer overflow-hidden border-r border-black/40 last:border-r-0"
       style={{
         flex: `${flex} 1 0`,
         transition: 'flex 0.55s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      {/* Base texture */}
-      <div className="absolute inset-0" style={{ background: tx.bg }}/>
-      <div className="absolute inset-0 opacity-40" style={{
-        backgroundImage: tx.overlay,
-        backgroundSize: tx.overlaySize,
-      }}/>
-      {/* Subtle grain */}
-      <div className="absolute inset-0 opacity-[.08]" style={{
-        backgroundImage:'repeating-radial-gradient(circle at 0 0, rgba(255,255,255,.4) 0 .5px, transparent .5px 2px)',
-        backgroundSize:'3px 3px',
-        mixBlendMode:'overlay',
+      {/* Real suede texture photo */}
+      <div className="absolute inset-0">
+        <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            transform: isActive ? 'scale(1.15)' : 'scale(1.05)',
+            transition: 'transform 1.2s cubic-bezier(0.2,0.7,0.2,1)',
+            filter: p.code === '03' ? 'hue-rotate(200deg) saturate(1.4)' : p.code === '04' ? 'hue-rotate(320deg) saturate(0.8)' : 'saturate(0.7)',
+          }}/>
+      </div>
+      {/* Color tint overlay */}
+      <div className="absolute inset-0" style={{ background: tints[p.code] }}/>
+      {/* Mouse-follow spotlight — simulates suede nap changing with touch */}
+      <div className="absolute inset-0 pointer-events-none transition-opacity duration-500" style={{
+        background: `radial-gradient(circle 280px at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.12), transparent 70%)`,
+        opacity: isActive ? 1 : 0,
       }}/>
       {/* Dim when compressed */}
       <div className="absolute inset-0 transition-opacity duration-500 pointer-events-none" style={{
-        background: 'rgba(0,0,0,.45)',
+        background: 'rgba(0,0,0,.5)',
         opacity: isCompressed ? 1 : 0,
       }}/>
       {/* Azure edge when active */}
@@ -757,4 +851,4 @@ function Footer() {
   );
 }
 
-Object.assign(window, { Nav, Hero, TechStatement, TextureDivider, ProductTypes, Sustainability, Footer });
+Object.assign(window, { Nav, Hero, TechStatement, TheTouch, TextureDivider, ProductTypes, Sustainability, Footer });

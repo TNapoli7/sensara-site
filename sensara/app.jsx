@@ -34,6 +34,7 @@ function App() {
       <Hero/>
       <div className="section-stack">
         <TechStatement/>
+        <TheTouch/>
         <ProductTypes/>
         <GlobeSection/>
         <Sustainability/>
