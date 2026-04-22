@@ -91,11 +91,18 @@ body { font-family: 'Poppins', system-ui, sans-serif; font-weight: 300; -webkit-
 .border-azure { border-color: var(--azure); }
 .bg-shark-950 { background: var(--shark-950); }
 .bg-shark-900 { background: var(--shark-900); }
+.bg-shark-800 { background: var(--shark-800); }
+.bg-shark-100 { background: var(--shark-100); }
 .bg-shark-50  { background: var(--shark-50);  }
+.text-shark-950 { color: var(--shark-950); }
+.text-shark-900 { color: var(--shark-900); }
+.text-shark-800 { color: var(--shark-800); }
+.text-shark-700 { color: var(--shark-700); }
+.text-shark-600 { color: var(--shark-600); }
+.text-shark-500 { color: var(--shark-500); }
 .text-shark-400 { color: var(--shark-400); }
 .text-shark-300 { color: var(--shark-300); }
-.text-shark-500 { color: var(--shark-500); }
-.text-shark-600 { color: var(--shark-600); }
+.text-shark-200 { color: var(--shark-200); }
 
 /* No select on decorative */
 .noselect { user-select:none; -webkit-user-select:none; }

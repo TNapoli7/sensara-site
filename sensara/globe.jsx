@@ -15,7 +15,7 @@ function GlobeSection() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(0, 0, 4.2);
+    camera.position.set(0, 0, 4.8);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -263,6 +263,50 @@ function GlobeSection() {
     // Initial tilt
     globeGroup.rotation.x = 0.25;
 
+    // Click-drag rotation
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragOffset = 0;
+    let dragMomentum = 0;
+
+    canvas.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragMomentum = 0;
+      canvas.style.cursor = 'grabbing';
+    });
+    const onMove = function(e) {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      dragStartX = e.clientX;
+      dragOffset += dx * 0.005;
+      dragMomentum = dx * 0.005;
+    };
+    const onUp = function() {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    canvas.style.cursor = 'grab';
+
+    // Touch support
+    canvas.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragMomentum = 0;
+    });
+    const onTouchMove = function(e) {
+      if (!isDragging) return;
+      const dx = e.touches[0].clientX - dragStartX;
+      dragStartX = e.touches[0].clientX;
+      dragOffset += dx * 0.005;
+      dragMomentum = dx * 0.005;
+    };
+    const onTouchEnd = function() { isDragging = false; };
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchend', onTouchEnd);
+
     let t0 = performance.now();
     let running = true;
     function tick() {
@@ -270,10 +314,16 @@ function GlobeSection() {
       const t = (performance.now() - t0) / 1000;
       const p = stateRef.current.rot;
 
-      // Rotate: Europe-facing → China-facing based on scroll
+      // Slow momentum decay when not dragging
+      if (!isDragging) {
+        dragOffset += dragMomentum;
+        dragMomentum *= 0.95;
+      }
+
+      // Rotate: Portugal-facing at p=0 → China-facing at p=1
       const baseY = -((PORTUGAL.lng) * Math.PI / 180);
       const endY = -((CHINA.lng) * Math.PI / 180);
-      globeGroup.rotation.y = baseY + (endY - baseY) * p + t * 0.04;
+      globeGroup.rotation.y = baseY + (endY - baseY) * p + t * 0.015 + dragOffset;
 
       // Traveler orbits continuously along the arc
       const tp = (t * 0.12) % 1;
@@ -295,6 +345,10 @@ function GlobeSection() {
     return () => {
       running = false;
       ro.disconnect();
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       renderer.dispose();
       dotGeom.dispose(); dotMat.dispose();
       arcGeom.dispose(); arcMat.dispose();

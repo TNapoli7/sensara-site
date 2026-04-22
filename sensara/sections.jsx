@@ -526,7 +526,7 @@ function ApplicationTile({ a, i }) {
 function BrandStrip() {
   const brands = ['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'];
   return (
-    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
+    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4, color:'#262626'}}>
       {/* Transition gradient from dark section above */}
       <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.25) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
@@ -599,7 +599,7 @@ function Sustainability() {
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
   ];
   return (
-    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6}}>
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6, color:'#262626'}}>
       {/* Transition gradient from dark Globe above */}
       <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
