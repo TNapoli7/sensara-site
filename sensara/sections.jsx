@@ -6,8 +6,8 @@ function Nav() {
   const scrolled = y > 60;
   const [open, setOpen] = useState(false);
   const items = [
+    ['Technology', '#technology'],
     ['Product', '#product'],
-    ['Applications', '#applications'],
     ['Global', '#global'],
     ['Sustainability', '#sustainability'],
     ['Contact', '#contact'],
@@ -199,7 +199,7 @@ function TechStatement() {
     ['Recyclability', 'Mono-component options'],
   ];
   return (
-    <section className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2}}>
+    <section id="technology" className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2}}>
       <div className="absolute inset-0 grid-lines opacity-60"/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative">
         {/* Header */}
@@ -241,7 +241,7 @@ function TechStatement() {
         </Reveal>
 
         {/* Interior application map with real images */}
-        <div className="mt-20 md:mt-28">
+        <div id="applications" className="mt-20 md:mt-28">
           <div className="grid md:grid-cols-12 gap-8 items-end mb-10">
             <div className="md:col-span-6">
               <Reveal>

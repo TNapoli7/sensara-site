@@ -355,15 +355,15 @@ function InteriorHotspots({ active, setActive }) {
           src="sensara/images/interior-hero.jpg"
           alt="Premium car interior with Sensara materials"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{filter: active ? 'brightness(0.65)' : 'brightness(0.9)', transition:'filter 0.5s ease'}}
+          style={{filter: active ? 'brightness(0.75)' : 'brightness(1)', transition:'filter 0.5s ease'}}
         />
-        {/* Subtle vignette overlay */}
+        {/* Soft edge vignette only */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background:'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)'
+          background:'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)'
         }}/>
-        {/* Bottom gradient for text legibility */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none" style={{
-          background:'linear-gradient(to top, rgba(0,0,0,0.7), transparent)'
+        {/* Bottom gradient — only where detail panel sits */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/4 pointer-events-none" style={{
+          background:'linear-gradient(to top, rgba(0,0,0,0.55), transparent)'
         }}/>
 
         {/* Hotspot dots */}
@@ -373,7 +373,7 @@ function InteriorHotspots({ active, setActive }) {
             onClick={() => setActive(active === spot.id ? null : spot.id)}
             onMouseEnter={() => setActive(spot.id)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
-            style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+            style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center' }}
             aria-label={spot.label}
           >
             <span className="relative block">
@@ -426,7 +426,7 @@ function InteriorHotspots({ active, setActive }) {
             }}>
               {/* Detail image */}
               <div className="relative w-full" style={{aspectRatio:'16/10'}}>
-                <img src={activeSpot.image} alt={activeSpot.label}
+                <img src={activeSpot.image} alt={activeSpot.label} loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"/>
                 <div className="absolute bottom-0 left-0 right-0 h-1/2" style={{
                   background:'linear-gradient(to top, rgba(18,18,18,0.95), transparent)'
