@@ -279,61 +279,186 @@ function Hotspot({ x, y, label, active, onHover, onLeave }) {
   );
 }
 
-/* ————————————————— Car schematic SVG ————————————————— */
-function CarSchematic({ hover, setHover }) {
-  const spots = [
-    { id:'headliner', x: 50, y: 22, label: 'Headliner & Pillars' },
-    { id:'sunvisor',  x: 35, y: 30, label: 'Sunvisor' },
-    { id:'pillow',    x: 40, y: 46, label: 'Head Pillow Cushions' },
-    { id:'ip',        x: 22, y: 52, label: 'Instrument Panel' },
-    { id:'door',      x: 58, y: 62, label: 'Door Panels' },
-    { id:'seat',      x: 48, y: 74, label: 'Seat Systems' },
-  ];
+/* ————————————————— Interior Hotspots — real image based ————————————————— */
+const HOTSPOT_DATA = [
+  {
+    id: 'headliner',
+    x: 50, y: 12,
+    label: 'Headliner & Pillars',
+    product: 'Sensara Air',
+    spec: '280 gsm · 100% PES · Mono-component',
+    detail: 'Lightweight and fully recyclable. Precision perforation capability enables integrated lighting effects for overhead systems.',
+    image: 'sensara/images/headliner.jpg',
+  },
+  {
+    id: 'seat',
+    x: 32, y: 58,
+    label: 'Seat Systems',
+    product: 'Sensara Core',
+    spec: '320 gsm · 100% PES · Solvent free',
+    detail: 'High abrasion resistance and low elongation designed for high-stress seating areas. Full recyclability at vehicle end-of-life.',
+    image: 'sensara/images/seats.jpg',
+  },
+  {
+    id: 'door',
+    x: 82, y: 52,
+    label: 'Door Panels',
+    product: 'Sensara Plus',
+    spec: '300 gsm · 70% PES / 30% PU · Water based',
+    detail: 'Luxury performance for demanding interior surfaces. Available with up to 70% recycled content.',
+    image: 'sensara/images/door-panel.jpg',
+  },
+  {
+    id: 'ip',
+    x: 68, y: 38,
+    label: 'Instrument Panel',
+    product: 'Sensara Plus',
+    spec: '300 gsm · 70% PES / 30% PU · Water based',
+    detail: 'Premium suede finish for the most visible interior surface. High abrasion resistance meets refined aesthetics.',
+    image: 'sensara/images/door-panel.jpg',
+  },
+  {
+    id: 'pillow',
+    x: 26, y: 32,
+    label: 'Head Pillow Cushions',
+    product: 'Sensara Skin',
+    spec: '260 gsm · 90% PES / 10% Spandex',
+    detail: 'Ultimate softness engineered for direct skin contact. Four-way stretch ensures a flawless wrapped finish.',
+    image: 'sensara/images/head-pillow.jpg',
+  },
+];
+
+function InteriorHotspots({ active, setActive }) {
+  const containerRef = useRef(null);
+  const detailRef = useRef(null);
+  const activeSpot = HOTSPOT_DATA.find(s => s.id === active);
+
+  // Animate detail panel
+  useEffect(() => {
+    const el = detailRef.current;
+    if (!el || !window.gsap) return;
+    const gsap = window.gsap;
+    if (activeSpot) {
+      gsap.killTweensOf(el);
+      gsap.fromTo(el,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+      );
+    }
+  }, [active]);
+
   return (
-    <div className="relative w-full" style={{aspectRatio:'16/9'}}>
-      <div className="absolute inset-0 suede-bg" />
-      <div className="absolute inset-0 grid-lines" />
-      <svg viewBox="0 0 800 450" className="absolute inset-0 w-full h-full">
-        <defs>
-          <linearGradient id="floorGrad" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#266DF1" stopOpacity=".0"/>
-            <stop offset="1" stopColor="#266DF1" stopOpacity=".15"/>
-          </linearGradient>
-        </defs>
-        <rect x="0" y="380" width="800" height="70" fill="url(#floorGrad)"/>
-        <line x1="0" y1="380" x2="800" y2="380" stroke="#266DF1" strokeOpacity=".35"/>
-        <g stroke="#ffffff" strokeOpacity=".85" fill="none" strokeWidth="1.25">
-          <path d="M80 340 L140 300 L260 290 L360 240 L520 230 L640 260 L720 290 L740 340 Z" />
-          <path d="M260 290 C 320 210, 520 210, 640 260" />
-          <line x1="420" y1="230" x2="420" y2="290" />
-          <circle cx="210" cy="340" r="42" />
-          <circle cx="620" cy="340" r="42" />
-          <circle cx="210" cy="340" r="22" strokeOpacity=".4" />
-          <circle cx="620" cy="340" r="22" strokeOpacity=".4" />
-          <path d="M380 290 L380 250 L420 245 L420 290" strokeOpacity=".35"/>
-          <path d="M455 290 L455 250 L500 245 L500 290" strokeOpacity=".35"/>
-          <line x1="340" y1="290" x2="340" y2="340" strokeOpacity=".35"/>
-          <line x1="530" y1="290" x2="530" y2="340" strokeOpacity=".35"/>
-          <path d="M300 220 C 400 200, 520 200, 600 230" strokeOpacity=".25"/>
-        </g>
-      </svg>
-      {spots.map(s => (
-        <Hotspot key={s.id} x={s.x} y={s.y} label={s.label} active={hover === s.id} onHover={() => setHover(s.id)} onLeave={() => setHover(null)} />
-      ))}
-      {[['top-4 left-4'],['top-4 right-4'],['bottom-4 left-4'],['bottom-4 right-4']].map((c,i)=>(
-        <div key={i} className={`absolute ${c[0]} w-4 h-4`}>
-          <div className="absolute inset-x-0 top-0 h-px bg-white/40"/>
-          <div className="absolute inset-y-0 left-0 w-px bg-white/40"/>
-        </div>
-      ))}
-      <div className="absolute bottom-3 left-3 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
-        [ fig.01 — interior application map ]
+    <div ref={containerRef} className="relative w-full overflow-hidden" style={{borderRadius:'16px'}}>
+      {/* Hero interior image */}
+      <div className="relative w-full" style={{aspectRatio:'16/9'}}>
+        <img
+          src="sensara/images/interior-hero.jpg"
+          alt="Premium car interior with Sensara materials"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{filter: active ? 'brightness(0.55)' : 'brightness(0.7)', transition:'filter 0.5s ease'}}
+        />
+        {/* Dark vignette overlay */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background:'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.6) 100%)'
+        }}/>
+        {/* Bottom gradient for text legibility */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none" style={{
+          background:'linear-gradient(to top, rgba(0,0,0,0.7), transparent)'
+        }}/>
+
+        {/* Hotspot dots */}
+        {HOTSPOT_DATA.map(spot => (
+          <button
+            key={spot.id}
+            onClick={() => setActive(active === spot.id ? null : spot.id)}
+            onMouseEnter={() => setActive(spot.id)}
+            className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
+            style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+            aria-label={spot.label}
+          >
+            <span className="relative block">
+              {/* Pulse ring */}
+              <span className="absolute inset-0 rounded-full"
+                style={{
+                  width: active === spot.id ? '28px' : '20px',
+                  height: active === spot.id ? '28px' : '20px',
+                  margin: active === spot.id ? '-8px' : '-4px',
+                  background: 'rgba(38,109,241,0.25)',
+                  border: '1px solid rgba(38,109,241,0.5)',
+                  borderRadius: '50%',
+                  animation: 'pulseDot 2s infinite',
+                  transition: 'all 0.3s ease',
+                }}/>
+              {/* Center dot */}
+              <span className="block rounded-full bg-azure"
+                style={{
+                  width: active === spot.id ? '14px' : '10px',
+                  height: active === spot.id ? '14px' : '10px',
+                  boxShadow:'0 0 12px rgba(38,109,241,0.6), 0 0 0 2px rgba(255,255,255,0.25)',
+                  transition: 'all 0.3s ease',
+                }}/>
+            </span>
+            {/* Floating label on hover */}
+            <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none"
+              style={{
+                opacity: active === spot.id ? 1 : 0,
+                transform: active === spot.id ? 'translateX(0) translateY(-50%)' : 'translateX(-8px) translateY(-50%)',
+                transition: 'all 0.3s ease',
+              }}>
+              <span className="mono text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 bg-azure text-white inline-block"
+                style={{boxShadow:'0 4px 20px rgba(38,109,241,0.35)'}}>
+                {spot.label}
+              </span>
+            </span>
+          </button>
+        ))}
+
+        {/* Detail panel — appears over image when a spot is active */}
+        {activeSpot && (
+          <div ref={detailRef}
+            className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-auto md:w-[420px] z-20"
+            style={{pointerEvents:'auto'}}>
+            <div className="backdrop-blur-xl overflow-hidden" style={{
+              background:'rgba(18,18,18,0.85)',
+              border:'1px solid rgba(255,255,255,0.1)',
+              borderRadius:'12px',
+              boxShadow:'0 20px 60px rgba(0,0,0,0.5)',
+            }}>
+              {/* Detail image */}
+              <div className="relative w-full" style={{aspectRatio:'16/10'}}>
+                <img src={activeSpot.image} alt={activeSpot.label}
+                  className="absolute inset-0 w-full h-full object-cover"/>
+                <div className="absolute bottom-0 left-0 right-0 h-1/2" style={{
+                  background:'linear-gradient(to top, rgba(18,18,18,0.95), transparent)'
+                }}/>
+                <div className="absolute bottom-3 left-4">
+                  <span className="mono text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 bg-azure/90 text-white">
+                    {activeSpot.product}
+                  </span>
+                </div>
+              </div>
+              {/* Info */}
+              <div className="px-5 py-4">
+                <h4 className="font-display text-lg tracking-tight text-white mb-1">{activeSpot.label}</h4>
+                <p className="mono text-[10px] tracking-[0.15em] text-azure mb-3">{activeSpot.spec}</p>
+                <p className="text-sm text-white/65 leading-relaxed">{activeSpot.detail}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
-        hover zones
+
+      {/* Bottom caption bar */}
+      <div className="flex items-center justify-between px-4 py-3" style={{background:'rgba(26,26,26,0.95)'}}>
+        <span className="mono text-[10px] tracking-[0.2em] uppercase text-white/40">
+          [ fig.01 — interior application map ]
+        </span>
+        <span className="mono text-[10px] tracking-[0.2em] uppercase text-white/40">
+          {active ? '← click to close' : 'select a zone'}
+        </span>
       </div>
     </div>
   );
 }
 
-Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, StaggerReveal, Parallax, SuedeScrollTexture, SuedeTile, Hotspot, CarSchematic });
+Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, StaggerReveal, Parallax, SuedeScrollTexture, SuedeTile, Hotspot, InteriorHotspots, HOTSPOT_DATA });

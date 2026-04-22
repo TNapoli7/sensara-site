@@ -240,36 +240,46 @@ function TechStatement() {
           </div>
         </Reveal>
 
-        {/* Car schematic */}
-        <div className="mt-20 md:mt-28 grid md:grid-cols-12 gap-8 items-start">
-          <div className="md:col-span-8">
-            <Reveal>
-              <CarSchematic hover={hover} setHover={setHover}/>
-            </Reveal>
+        {/* Interior application map with real images */}
+        <div className="mt-20 md:mt-28">
+          <div className="grid md:grid-cols-12 gap-8 items-end mb-10">
+            <div className="md:col-span-6">
+              <Reveal>
+                <Eyebrow className="mb-4">Application Map</Eyebrow>
+                <h3 className="font-display text-2xl md:text-3xl tracking-tight">Five surfaces. One material family.</h3>
+              </Reveal>
+            </div>
+            <div className="md:col-span-5 md:col-start-8">
+              <Reveal delay={100}>
+                <p className="text-sm text-shark-400 leading-relaxed">Explore each application zone. Every surface is matched to the optimal Sensara variant for its specific performance demands.</p>
+              </Reveal>
+            </div>
           </div>
-          <div className="md:col-span-4">
-            <Reveal>
-              <Eyebrow className="mb-4">Application Map</Eyebrow>
-              <h3 className="font-display text-2xl md:text-3xl mb-6 tracking-tight">Six surfaces.<br/>One material family.</h3>
-              <ul className="space-y-3">
-                {[
-                  ['headliner','Headliner & Pillars'],
-                  ['seat','Seat Systems'],
-                  ['door','Door Panels'],
-                  ['ip','Instrument Panel'],
-                  ['pillow','Head Pillow Cushions'],
-                  ['sunvisor','Sunvisor'],
-                ].map(([id,label])=>(
-                  <li key={id}
-                      onMouseEnter={()=>setHover(id)}
-                      onMouseLeave={()=>setHover(null)}
-                      className={`flex items-center gap-3 py-2 border-b border-white/10 cursor-default transition-colors ${hover===id ? 'text-azure' : 'text-white/80'}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${hover===id ? 'bg-azure' : 'bg-white/30'}`}></span>
-                    <span className="mono text-[11px] tracking-[0.2em] uppercase">{label}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+          <Reveal>
+            <InteriorHotspots active={hover} setActive={setHover}/>
+          </Reveal>
+          {/* Zone list below image */}
+          <div className="mt-8">
+            <StaggerReveal className="grid grid-cols-2 md:grid-cols-5 gap-px" stagger={0.06}>
+              {HOTSPOT_DATA.map(spot => (
+                <button key={spot.id}
+                  onClick={() => setHover(hover === spot.id ? null : spot.id)}
+                  onMouseEnter={() => setHover(spot.id)}
+                  onMouseLeave={() => setHover(null)}
+                  className="text-left px-4 py-4 transition-all duration-300"
+                  style={{
+                    background: hover === spot.id ? 'rgba(38,109,241,0.12)' : 'rgba(255,255,255,0.03)',
+                    borderBottom: hover === spot.id ? '2px solid var(--azure)' : '2px solid rgba(255,255,255,0.06)',
+                  }}>
+                  <span className={`block mono text-[10px] tracking-[0.2em] uppercase mb-1 transition-colors ${hover === spot.id ? 'text-azure' : 'text-white/50'}`}>
+                    {spot.product}
+                  </span>
+                  <span className={`block text-sm font-medium transition-colors ${hover === spot.id ? 'text-white' : 'text-white/75'}`}>
+                    {spot.label}
+                  </span>
+                </button>
+              ))}
+            </StaggerReveal>
           </div>
         </div>
       </div>
