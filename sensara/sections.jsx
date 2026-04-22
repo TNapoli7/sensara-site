@@ -88,7 +88,7 @@ function Hero() {
         }}>
           <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{opacity: 0.18, filter:'brightness(0.6) contrast(1.3)'}}/>
+            style={{opacity: 0.18, filter:'brightness(0.5) contrast(1.2) saturate(0) sepia(0.1)'}}/>
         </div>
         {/* Video stage */}
         <div
@@ -331,7 +331,7 @@ function TheTouch() {
         clipPath: isInside
           ? `circle(120px at ${mouse.x}px ${mouse.y}px)`
           : `circle(0px at ${mouse.x}px ${mouse.y}px)`,
-        transition: isInside ? 'clip-path 0.08s ease-out' : 'clip-path 0.4s ease-in',
+        transition: isInside ? 'none' : 'clip-path 0.4s ease-in',
       }}>
         <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
@@ -428,12 +428,12 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
   const panelRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
-  // Per-panel color overlay for the texture
+  // Per-panel color overlay for the texture — strong differentiation
   const tints = {
-    '01': 'rgba(26,26,26,0.75)',       // neutral dark
-    '02': 'rgba(20,22,28,0.75)',       // cool dark
-    '03': 'rgba(10,20,50,0.65)',       // azure dark
-    '04': 'rgba(28,18,24,0.72)',       // warm dark
+    '01': 'rgba(40,38,35,0.72)',       // warm sand
+    '02': 'rgba(15,20,40,0.70)',       // deep navy
+    '03': 'rgba(10,25,60,0.60)',       // azure blue
+    '04': 'rgba(50,18,22,0.68)',       // burgundy wine
   };
 
   const handleMouseMove = useCallback((e) => {
@@ -463,7 +463,10 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
           style={{
             transform: isActive ? 'scale(1.15)' : 'scale(1.05)',
             transition: 'transform 1.2s cubic-bezier(0.2,0.7,0.2,1)',
-            filter: p.code === '03' ? 'hue-rotate(200deg) saturate(1.4)' : p.code === '04' ? 'hue-rotate(320deg) saturate(0.8)' : 'saturate(0.7)',
+            filter: p.code === '01' ? 'sepia(0.3) saturate(0.6) brightness(1.05)'
+              : p.code === '02' ? 'hue-rotate(210deg) saturate(1.6) brightness(0.95)'
+              : p.code === '03' ? 'hue-rotate(200deg) saturate(2.0) brightness(1.1)'
+              : 'hue-rotate(330deg) saturate(1.4) brightness(0.9)',
           }}/>
       </div>
       {/* Color tint overlay */}
@@ -488,7 +491,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
            style={{ opacity: isActive ? 0 : 1 }}>
         <div className="mono text-[10px] tracking-[0.3em] uppercase text-white/60">{p.code}</div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="font-display text-lg md:text-xl lg:text-2xl text-white whitespace-nowrap"
+          <div className="font-display text-2xl md:text-3xl lg:text-4xl text-white whitespace-nowrap"
                style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: '-0.02em' }}>
             {p.name.replace('Sensara ', '')}
           </div>
@@ -529,7 +532,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
             </div>
           </div>
 
-          <p className="text-sm text-white/80 leading-relaxed mb-6" style={{textWrap:'pretty'}}>{p.selling}</p>
+          <p className="text-base text-white/85 leading-relaxed mb-6" style={{textWrap:'pretty'}}>{p.selling}</p>
         </div>
 
         <div className="flex items-end justify-between">
@@ -538,16 +541,20 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
             <span className="inline-block">→</span>
           </a>
           {/* Mini hotspot diagram */}
-          <svg width="90" height="50" viewBox="0 0 90 50" className="text-white/50">
-            <path d="M5 38 L15 30 L30 28 L42 20 L60 19 L72 24 L82 32 L85 38" fill="none" stroke="currentColor" strokeWidth="1"/>
-            <circle cx="22" cy="40" r="4" fill="none" stroke="currentColor" strokeWidth="1"/>
-            <circle cx="70" cy="40" r="4" fill="none" stroke="currentColor" strokeWidth="1"/>
-            {/* Hotspot for this product */}
-            {p.code === '01' && <circle cx="45" cy="16" r="3" fill="#266DF1"/>}
-            {p.code === '02' && <circle cx="68" cy="28" r="3" fill="#266DF1"/>}
-            {p.code === '03' && <circle cx="52" cy="22" r="3" fill="#266DF1"/>}
-            {p.code === '04' && <circle cx="45" cy="24" r="3" fill="#266DF1"/>}
-          </svg>
+          <div className="flex flex-col items-end gap-1">
+            <span className="mono text-[10px] tracking-[0.15em] uppercase text-white/50 mb-1">Application zone</span>
+            <svg width="140" height="78" viewBox="0 0 140 78" className="text-white/60">
+              <path d="M8 60 L24 46 L48 44 L66 30 L94 29 L112 38 L128 50 L132 60" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="34" cy="64" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="108" cy="64" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="8" y1="68" x2="132" y2="68" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.4"/>
+              {/* Hotspot for this product */}
+              {p.code === '01' && <><circle cx="70" cy="25" r="5" fill="#266DF1" opacity="0.9"/><text x="70" y="16" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">HEADLINER</text></>}
+              {p.code === '02' && <><circle cx="106" cy="42" r="5" fill="#266DF1" opacity="0.9"/><text x="106" y="33" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">SEATS</text></>}
+              {p.code === '03' && <><circle cx="82" cy="34" r="5" fill="#266DF1" opacity="0.9"/><text x="82" y="25" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">MULTI</text></>}
+              {p.code === '04' && <><circle cx="70" cy="36" r="5" fill="#266DF1" opacity="0.9"/><text x="70" y="27" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">PILLOW</text></>}
+            </svg>
+          </div>
         </div>
       </div>
     </div>
