@@ -1,7 +1,13 @@
 /* Sensara App — root */
 
 function App() {
-  // Smooth anchor scroll
+  // Initialize GSAP + Lenis on mount
+  useEffect(() => {
+    initGSAP();
+    initLenis();
+  }, []);
+
+  // Smooth anchor scroll via Lenis
   useEffect(() => {
     const handle = (e) => {
       const a = e.target.closest('a[href^="#"]');
@@ -11,7 +17,11 @@ function App() {
       const el = document.querySelector(id);
       if (!el) return;
       e.preventDefault();
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 40, behavior: 'smooth' });
+      if (window._lenis) {
+        window._lenis.scrollTo(el, { offset: -40 });
+      } else {
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 40, behavior: 'smooth' });
+      }
     };
     document.addEventListener('click', handle);
     return () => document.removeEventListener('click', handle);
@@ -19,17 +29,17 @@ function App() {
 
   return (
     <>
+      <SuedeScrollTexture/>
       <Nav/>
       <Hero/>
-      <TechStatement/>
-      <TextureDivider variant="dark"/>
-      <ProductTypes/>
-      <TextureDivider variant="dark"/>
-      <Applications/>
-      <GlobeSection/>
-      <TextureDivider variant="dark"/>
-      <Sustainability/>
-      <Footer/>
+      <div className="section-stack">
+        <TechStatement/>
+        <ProductTypes/>
+        <BrandStrip/>
+        <GlobeSection/>
+        <Sustainability/>
+        <Footer/>
+      </div>
     </>
   );
 }

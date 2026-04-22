@@ -199,7 +199,7 @@ function TechStatement() {
     ['Recyclability', 'Mono-component options'],
   ];
   return (
-    <section className="relative bg-shark-950 py-32 md:py-48 overflow-hidden">
+    <section className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:2}}>
       <div className="absolute inset-0 grid-lines opacity-60"/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative">
         {/* Header */}
@@ -455,7 +455,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
 function ProductTypes() {
   const [hovered, setHovered] = useState(0); // default first panel active
   return (
-    <section id="product" className="relative bg-shark-950 overflow-hidden">
+    <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:3}}>
       {/* Full-bleed accordion */}
       <Reveal>
         <div className="relative w-full h-[80vh] min-h-[640px] flex border-y border-white/5">
@@ -523,10 +523,10 @@ function ApplicationTile({ a, i }) {
   );
 }
 
-function Applications() {
+function BrandStrip() {
   const brands = ['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'];
   return (
-    <section id="applications" className="relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden">
+    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:4}}>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         {/* Brand wall */}
         <div>
@@ -569,7 +569,7 @@ function Sustainability() {
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
   ];
   return (
-    <section id="sustainability" className="relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden">
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:6}}>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           {/* Image col */}
@@ -603,7 +603,7 @@ function Sustainability() {
 
           {/* Content col */}
           <div className="md:col-span-7">
-            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>05 · Sustainability</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>03 · Sustainability</Eyebrow></Reveal>
             <div className="overflow-hidden mb-8">
               <Reveal clip>
                 <h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">
@@ -644,12 +644,12 @@ function Sustainability() {
 /* ————————————————— FOOTER ————————————————— */
 function Footer() {
   return (
-    <footer id="contact" className="relative bg-shark-950 text-white overflow-hidden">
+    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:7}}>
       {/* Massive wordmark backdrop */}
       <div className="relative pt-32 pb-12">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
           <Reveal>
-            <Eyebrow className="mb-8">06 · Contact</Eyebrow>
+            <Eyebrow className="mb-8">04 · Contact</Eyebrow>
           </Reveal>
           <div className="grid md:grid-cols-12 gap-10 mb-20">
             <div className="md:col-span-7">
@@ -723,4 +723,4 @@ function Footer() {
   );
 }
 
-Object.assign(window, { Nav, Hero, TechStatement, TextureDivider, ProductTypes, Applications, Sustainability, Footer });
+Object.assign(window, { Nav, Hero, TechStatement, TextureDivider, ProductTypes, BrandStrip, Sustainability, Footer });
