@@ -1,2 +1,3 @@
 # Only track optimized JPEGs, ignore raw PDF extracts
 page*_img*.png
+temp_*.png

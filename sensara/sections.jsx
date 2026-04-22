@@ -312,7 +312,7 @@ function TheTouch() {
       className="section-overlap relative overflow-hidden"
       style={{
         height: '100vh', minHeight:'600px',
-        borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2,
+        borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:3,
         cursor: 'none',
       }}
       onMouseMove={handleMouseMove}
@@ -557,7 +557,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
 function ProductTypes() {
   const [hovered, setHovered] = useState(0); // default first panel active
   return (
-    <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:3}}>
+    <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
       {/* Full-bleed accordion */}
       <Reveal>
         <div className="relative w-full h-[80vh] min-h-[640px] flex border-y border-white/5">
@@ -693,7 +693,7 @@ function Sustainability() {
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
   ];
   return (
-    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5, color:'#262626'}}>
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6, color:'#262626'}}>
       {/* Transition gradient from dark Globe above */}
       <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
@@ -770,7 +770,7 @@ function Sustainability() {
 /* ————————————————— FOOTER ————————————————— */
 function Footer() {
   return (
-    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6}}>
+    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:7}}>
       {/* Transition gradient from white Sustainability above */}
       <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* Massive wordmark backdrop */}
