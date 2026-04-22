@@ -355,11 +355,11 @@ function InteriorHotspots({ active, setActive }) {
           src="sensara/images/interior-hero.jpg"
           alt="Premium car interior with Sensara materials"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{filter: active ? 'brightness(0.55)' : 'brightness(0.7)', transition:'filter 0.5s ease'}}
+          style={{filter: active ? 'brightness(0.65)' : 'brightness(0.9)', transition:'filter 0.5s ease'}}
         />
-        {/* Dark vignette overlay */}
+        {/* Subtle vignette overlay */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background:'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.6) 100%)'
+          background:'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)'
         }}/>
         {/* Bottom gradient for text legibility */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none" style={{

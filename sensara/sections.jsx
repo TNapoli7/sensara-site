@@ -255,9 +255,7 @@ function TechStatement() {
               </Reveal>
             </div>
           </div>
-          <Reveal>
-            <InteriorHotspots active={hover} setActive={setHover}/>
-          </Reveal>
+          <InteriorHotspots active={hover} setActive={setHover}/>
           {/* Zone list below image */}
           <div className="mt-8">
             <StaggerReveal className="grid grid-cols-2 md:grid-cols-5 gap-px" stagger={0.06}>
