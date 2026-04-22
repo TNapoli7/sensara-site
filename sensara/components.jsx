@@ -1,0 +1,205 @@
+/* Shared primitives for Sensara */
+
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+/* ————————————————— Scroll reveal hook ————————————————— */
+function useReveal(threshold = 0.18) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { setInView(true); io.disconnect(); } }),
+      { threshold }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, inView];
+}
+
+/* ————————————————— Scroll progress within a section ————————————————— */
+function useSectionProgress(ref) {
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const el = ref.current; if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // Progress from "top of section hits bottom of viewport" to "bottom of section hits top"
+        const total = rect.height + vh;
+        const passed = vh - rect.top;
+        const prog = Math.max(0, Math.min(1, passed / total));
+        setP(prog);
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
+  }, [ref]);
+  return p;
+}
+
+/* ————————————————— Global scrollY ————————————————— */
+function useScrollY() {
+  const [y, setY] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const f = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; setY(window.scrollY); });
+    };
+    window.addEventListener('scroll', f, { passive: true });
+    return () => window.removeEventListener('scroll', f);
+  }, []);
+  return y;
+}
+
+/* ————————————————— Eyebrow label ————————————————— */
+function Eyebrow({ children, className = '' }) {
+  return <div className={`eyebrow ${className}`}>{children}</div>;
+}
+
+/* ————————————————— Reveal wrapper ————————————————— */
+function Reveal({ children, delay = 0, className = '', as = 'div', clip = false }) {
+  const [ref, inView] = useReveal();
+  const Tag = as;
+  const cls = clip ? `clip-reveal ${inView ? 'in' : ''}` : `reveal ${inView ? 'in' : ''}`;
+  const style = delay ? { transitionDelay: `${delay}ms` } : undefined;
+  return <Tag ref={ref} className={`${cls} ${className}`} style={style}>{children}</Tag>;
+}
+
+/* ————————————————— Suede tile (CSS-only visual placeholder, labelled) ————————————————— */
+function SuedeTile({ label, variant = 'dark', className = '', children }) {
+  const cls = variant === 'azure' ? 'suede-azure' : variant === 'light' ? 'suede-light' : 'suede-bg';
+  const textCls = variant === 'light' ? 'text-black/60' : 'text-white/60';
+  return (
+    <div className={`relative overflow-hidden ${cls} ${className}`}>
+      {label && (
+        <div className={`absolute top-3 left-3 mono text-[10px] tracking-[0.2em] uppercase ${textCls}`}>
+          [ {label} ]
+        </div>
+      )}
+      {children}
+    </div>
+  );
+}
+
+/* ————————————————— Azure hotspot dot ————————————————— */
+function Hotspot({ x, y, label, active, onHover, onLeave }) {
+  return (
+    <button
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
+      className="absolute -translate-x-1/2 -translate-y-1/2 group"
+      style={{ left: `${x}%`, top: `${y}%` }}
+      aria-label={label}
+    >
+      <span className="relative block">
+        <span className="absolute inset-0 rounded-full pulse-dot" style={{background:'var(--azure)', width:'12px', height:'12px'}} />
+        <span className="block w-3 h-3 rounded-full bg-azure" style={{boxShadow:'0 0 0 2px rgba(255,255,255,.15)'}} />
+      </span>
+      {active && (
+        <span className="absolute left-5 top-1/2 -translate-y-1/2 whitespace-nowrap mono text-[10px] tracking-[0.2em] uppercase px-2 py-1 bg-white text-black">
+          {label}
+        </span>
+      )}
+    </button>
+  );
+}
+
+/* ————————————————— Car schematic SVG (original, simple line art) ————————————————— */
+function CarSchematic({ hover, setHover }) {
+  const spots = [
+    { id:'headliner', x: 50, y: 22, label: 'Headliner & Pillars' },
+    { id:'sunvisor',  x: 35, y: 30, label: 'Sunvisor' },
+    { id:'pillow',    x: 40, y: 46, label: 'Head Pillow Cushions' },
+    { id:'ip',        x: 22, y: 52, label: 'Instrument Panel' },
+    { id:'door',      x: 58, y: 62, label: 'Door Panels' },
+    { id:'seat',      x: 48, y: 74, label: 'Seat Systems' },
+  ];
+  return (
+    <div className="relative w-full" style={{aspectRatio:'16/9'}}>
+      {/* Background suede panel */}
+      <div className="absolute inset-0 suede-bg" />
+      <div className="absolute inset-0 grid-lines" />
+
+      {/* Abstract side-view car silhouette (original line art) */}
+      <svg viewBox="0 0 800 450" className="absolute inset-0 w-full h-full">
+        <defs>
+          <linearGradient id="floorGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#266DF1" stopOpacity=".0"/>
+            <stop offset="1" stopColor="#266DF1" stopOpacity=".15"/>
+          </linearGradient>
+        </defs>
+        {/* floor */}
+        <rect x="0" y="380" width="800" height="70" fill="url(#floorGrad)"/>
+        <line x1="0" y1="380" x2="800" y2="380" stroke="#266DF1" strokeOpacity=".35"/>
+
+        {/* Car body — abstract side profile */}
+        <g stroke="#ffffff" strokeOpacity=".85" fill="none" strokeWidth="1.25">
+          {/* lower body */}
+          <path d="M80 340 L140 300 L260 290 L360 240 L520 230 L640 260 L720 290 L740 340 Z" />
+          {/* roof arc */}
+          <path d="M260 290 C 320 210, 520 210, 640 260" />
+          {/* windows divider */}
+          <line x1="420" y1="230" x2="420" y2="290" />
+          {/* wheel arches */}
+          <circle cx="210" cy="340" r="42" />
+          <circle cx="620" cy="340" r="42" />
+          <circle cx="210" cy="340" r="22" strokeOpacity=".4" />
+          <circle cx="620" cy="340" r="22" strokeOpacity=".4" />
+          {/* interior seat hint */}
+          <path d="M380 290 L380 250 L420 245 L420 290" strokeOpacity=".35"/>
+          <path d="M455 290 L455 250 L500 245 L500 290" strokeOpacity=".35"/>
+          {/* door line */}
+          <line x1="340" y1="290" x2="340" y2="340" strokeOpacity=".35"/>
+          <line x1="530" y1="290" x2="530" y2="340" strokeOpacity=".35"/>
+          {/* headliner hint */}
+          <path d="M300 220 C 400 200, 520 200, 600 230" strokeOpacity=".25"/>
+        </g>
+
+        {/* Connector lines from hotspots to labels (appear on hover) */}
+      </svg>
+
+      {/* Hotspots */}
+      {spots.map(s => (
+        <Hotspot
+          key={s.id}
+          x={s.x}
+          y={s.y}
+          label={s.label}
+          active={hover === s.id}
+          onHover={() => setHover(s.id)}
+          onLeave={() => setHover(null)}
+        />
+      ))}
+
+      {/* Corner crosshairs */}
+      {[['top-4 left-4'],['top-4 right-4'],['bottom-4 left-4'],['bottom-4 right-4']].map((c,i)=>(
+        <div key={i} className={`absolute ${c[0]} w-4 h-4`}>
+          <div className="absolute inset-x-0 top-0 h-px bg-white/40"/>
+          <div className="absolute inset-y-0 left-0 w-px bg-white/40"/>
+        </div>
+      ))}
+
+      {/* Caption */}
+      <div className="absolute bottom-3 left-3 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+        [ fig.01 — interior application map ]
+      </div>
+      <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+        hover zones ↗
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { useReveal, useSectionProgress, useScrollY, Eyebrow, Reveal, SuedeTile, Hotspot, CarSchematic });
