@@ -199,7 +199,7 @@ function TechStatement() {
     ['Recyclability', 'Mono-component options'],
   ];
   return (
-    <section className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:2}}>
+    <section className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2}}>
       <div className="absolute inset-0 grid-lines opacity-60"/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative">
         {/* Header */}
@@ -455,7 +455,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
 function ProductTypes() {
   const [hovered, setHovered] = useState(0); // default first panel active
   return (
-    <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:3}}>
+    <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:3}}>
       {/* Full-bleed accordion */}
       <Reveal>
         <div className="relative w-full h-[80vh] min-h-[640px] flex border-y border-white/5">
@@ -526,7 +526,9 @@ function ApplicationTile({ a, i }) {
 function BrandStrip() {
   const brands = ['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'];
   return (
-    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:4}}>
+    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
+      {/* Transition gradient from dark section above */}
+      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.25) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         {/* Brand wall */}
         <div>
@@ -562,6 +564,34 @@ function BrandStrip() {
 
 /* ————————————————— SECTION 6: SUSTAINABILITY ————————————————— */
 function Sustainability() {
+  const barRef = useRef(null);
+
+  // Animate the 70% bar on scroll
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el || !window.gsap) return;
+    const gsap = window.gsap;
+
+    gsap.set(el, { width: '0%' });
+
+    const tl = gsap.to(el, {
+      width: '70%',
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 90%',
+        end: 'top 50%',
+        scrub: 0.8,
+      },
+    });
+
+    return () => {
+      if (tl.scrollTrigger) tl.scrollTrigger.kill();
+      tl.kill();
+    };
+  }, []);
+
   const pillars = [
     { n:'01', title:'Recycled Fibers', desc:'Up to 70% recycled content across the Sensara portfolio. Turning waste into premium material.' },
     { n:'02', title:'Solvent Free',    desc:'100% solvent-free production. Water-based processes where applicable. Zero harmful emissions.' },
@@ -569,7 +599,9 @@ function Sustainability() {
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
   ];
   return (
-    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:6}}>
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6}}>
+      {/* Transition gradient from dark Globe above */}
+      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           {/* Image col */}
@@ -594,7 +626,7 @@ function Sustainability() {
                   </div>
                   <div className="text-sm text-shark-700 mt-2 mb-3">Recycled content across the Sensara portfolio</div>
                   <div className="h-1.5 bg-shark-100 relative overflow-hidden">
-                    <div className="absolute inset-y-0 left-0" style={{width:'70%', background:'var(--azure)'}}></div>
+                    <div ref={barRef} className="absolute inset-y-0 left-0" style={{width:'0%', background:'var(--azure)'}}></div>
                   </div>
                 </div>
               </div>
@@ -644,7 +676,9 @@ function Sustainability() {
 /* ————————————————— FOOTER ————————————————— */
 function Footer() {
   return (
-    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:7}}>
+    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:7}}>
+      {/* Transition gradient from white Sustainability above */}
+      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* Massive wordmark backdrop */}
       <div className="relative pt-32 pb-12">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">

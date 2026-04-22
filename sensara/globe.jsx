@@ -44,70 +44,16 @@ function GlobeSection() {
     globeGroup.add(core);
 
     // Wireframe lat/long
-    const wireMat = new THREE.LineBasicMaterial({ color: 0x3a4a6a, transparent: true, opacity: 0.35 });
+    const wireMat = new THREE.LineBasicMaterial({ color: 0x3a4a6a, transparent: true, opacity: 0.28 });
     const wire = new THREE.LineSegments(
       new THREE.WireframeGeometry(new THREE.SphereGeometry(R, 32, 20)),
       wireMat
     );
     globeGroup.add(wire);
 
-    // Dotted continents — procedurally placed dots only on "land" (using fbm-like noise mask)
-    const dotGeom = new THREE.BufferGeometry();
-    const positions = [];
-    const sizes = [];
-    const COUNT = 2400;
-
-    // Simple hash-based mask to simulate continents (deterministic)
-    function hash(x, y, z) {
-      const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
-      return s - Math.floor(s);
-    }
-    function fbm(x, y, z) {
-      let v = 0, a = 0.5, f = 1;
-      for (let i = 0; i < 4; i++) {
-        v += a * hash(Math.floor(x * f), Math.floor(y * f), Math.floor(z * f));
-        f *= 2; a *= 0.5;
-      }
-      return v;
-    }
-
-    for (let i = 0; i < COUNT; i++) {
-      // Fibonacci sphere
-      const phi = Math.acos(1 - 2 * (i + 0.5) / COUNT);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const x = Math.sin(phi) * Math.cos(theta);
-      const y = Math.sin(phi) * Math.sin(theta);
-      const z = Math.cos(phi);
-      const mask = fbm(x * 3.2, y * 3.2, z * 3.2);
-      if (mask > 0.55) {
-        positions.push(x * R * 1.005, y * R * 1.005, z * R * 1.005);
-        sizes.push(mask);
-      }
-    }
-    dotGeom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-    const dotMat = new THREE.PointsMaterial({
-      color: 0x266DF1,
-      size: 0.018,
-      sizeAttenuation: true,
-      transparent: true,
-      opacity: 0.9,
-    });
-    const dots = new THREE.Points(dotGeom, dotMat);
-    globeGroup.add(dots);
-
-    // Atmosphere glow — layered transparent sphere
-    const atmoMat = new THREE.MeshBasicMaterial({
-      color: 0x266DF1,
-      transparent: true,
-      opacity: 0.08,
-      side: THREE.BackSide,
-    });
-    const atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.08, 48, 48), atmoMat);
-    globeGroup.add(atmo);
-
-    // Lat/Lng -> XYZ on sphere
-    function llToXYZ(lat, lng, r = R * 1.015) {
+    // Lat/Lng -> XYZ on sphere (must be defined before continent dots)
+    function llToXYZ(lat, lng, r) {
+      r = r || R * 1.015;
       const phi = (90 - lat) * (Math.PI / 180);
       const theta = (lng + 180) * (Math.PI / 180);
       const x = -r * Math.sin(phi) * Math.cos(theta);
@@ -116,23 +62,159 @@ function GlobeSection() {
       return new THREE.Vector3(x, y, z);
     }
 
-    const PORTUGAL = { lat: 38.7, lng: -9.1, name: 'Portugal' };
-    const CHINA = { lat: 30.3, lng: 120.2, name: 'China' };
+    // ——— Real continent regions (lat/lng bounding boxes) ———
+    const LAND = [
+      // North America
+      [48,85,-170,-55],[25,48,-130,-65],[15,30,-120,-85],
+      // Greenland
+      [60,84,-60,-15],
+      // Central America
+      [7,20,-92,-77],
+      // Caribbean
+      [17,28,-85,-60],
+      // South America
+      [-5,12,-82,-50],[-25,-5,-80,-35],[-40,-25,-72,-48],[-56,-40,-75,-63],
+      // Europe — Iberia
+      [36,44,-10,3],
+      // Europe — France/Benelux/Germany
+      [43,55,-5,15],
+      // Europe — UK/Ireland
+      [50,59,-11,2],
+      // Europe — Scandinavia
+      [55,71,4,32],
+      // Europe — Italy/Balkans
+      [37,47,7,30],
+      // Europe — Eastern
+      [44,56,14,40],
+      // Africa — North
+      [20,37,-18,35],
+      // Africa — West
+      [0,20,-18,15],
+      // Africa — East / Horn
+      [0,20,15,52],
+      // Africa — Central
+      [-15,0,8,35],
+      // Africa — South
+      [-35,-15,15,35],
+      // Madagascar
+      [-26,-12,43,50],
+      // Middle East
+      [12,38,35,60],
+      // Arabia
+      [12,32,35,60],
+      // Russia — West
+      [50,75,30,60],
+      // Russia — Siberia
+      [50,75,60,120],
+      // Russia — Far East
+      [50,72,120,180],
+      // Central Asia
+      [35,55,50,90],
+      // South Asia — India
+      [8,28,68,90],
+      // South Asia — Pakistan/Afghanistan
+      [24,38,60,78],
+      // Southeast Asia — mainland
+      [8,28,90,110],
+      // Southeast Asia — Malay/Vietnam
+      [-2,8,98,120],
+      // East Asia — China south
+      [20,40,98,122],
+      // East Asia — China north
+      [35,55,75,135],
+      // Korea
+      [33,43,124,130],
+      // Japan
+      [30,45,129,146],
+      // Taiwan
+      [22,26,120,122],
+      // Philippines
+      [5,20,117,127],
+      // Indonesia — Sumatra/Java
+      [-8,6,95,115],
+      // Indonesia — Borneo/Sulawesi
+      [-5,5,108,128],
+      // Indonesia — Papua
+      [-8,0,128,141],
+      // Australia
+      [-40,-10,112,155],
+      // New Zealand
+      [-47,-34,166,179],
+    ];
+
+    function isLand(lat, lng) {
+      for (let i = 0; i < LAND.length; i++) {
+        const r = LAND[i];
+        if (lat >= r[0] && lat <= r[1] && lng >= r[2] && lng <= r[3]) return true;
+      }
+      return false;
+    }
+
+    // Generate continent dots using Fibonacci sphere
+    const dotGeom = new THREE.BufferGeometry();
+    const positions = [];
+    const COUNT = 6000;
+
+    for (let i = 0; i < COUNT; i++) {
+      const phi = Math.acos(1 - 2 * (i + 0.5) / COUNT);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+      // Unit sphere coords (Y-up for Three.js)
+      const uy = Math.cos(phi);
+      const sinP = Math.sin(phi);
+      const ux = sinP * Math.cos(theta);
+      const uz = sinP * Math.sin(theta);
+
+      // Convert to lat/lng
+      const lat = Math.asin(uy) * (180 / Math.PI);
+      const lng = Math.atan2(uz, ux) * (180 / Math.PI);
+
+      if (isLand(lat, lng)) {
+        // Use llToXYZ for consistent coordinate system with markers
+        const pos = llToXYZ(lat, lng, R * 1.005);
+        positions.push(pos.x, pos.y, pos.z);
+      }
+    }
+    dotGeom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+    const dotMat = new THREE.PointsMaterial({
+      color: 0x266DF1,
+      size: 0.022,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.95,
+    });
+    const dots = new THREE.Points(dotGeom, dotMat);
+    globeGroup.add(dots);
+
+    // Subtle atmosphere glow
+    const atmoMat = new THREE.MeshBasicMaterial({
+      color: 0x266DF1,
+      transparent: true,
+      opacity: 0.045,
+      side: THREE.BackSide,
+    });
+    const atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.06, 48, 48), atmoMat);
+    globeGroup.add(atmo);
+
+    const PORTUGAL = { lat: 38.7, lng: -9.1 };
+    const CHINA = { lat: 30.3, lng: 120.2 };
 
     const pPos = llToXYZ(PORTUGAL.lat, PORTUGAL.lng);
     const cPos = llToXYZ(CHINA.lat, CHINA.lng);
 
     // Hotspot markers
-    function makeMarker(pos, color = 0x266DF1) {
+    function makeMarker(pos, color) {
+      color = color || 0x266DF1;
       const g = new THREE.Group();
       const inner = new THREE.Mesh(
-        new THREE.SphereGeometry(0.035, 16, 16),
+        new THREE.SphereGeometry(0.04, 16, 16),
         new THREE.MeshBasicMaterial({ color })
       );
       inner.position.copy(pos);
       g.add(inner);
 
-      const ringGeom = new THREE.RingGeometry(0.05, 0.06, 32);
+      const ringGeom = new THREE.RingGeometry(0.055, 0.065, 32);
       const ring = new THREE.Mesh(ringGeom, new THREE.MeshBasicMaterial({
         color, transparent: true, opacity: 0.8, side: THREE.DoubleSide,
       }));
@@ -140,9 +222,8 @@ function GlobeSection() {
       ring.lookAt(0, 0, 0);
       g.add(ring);
 
-      // Outer pulse ring
       const pulseRing = new THREE.Mesh(
-        new THREE.RingGeometry(0.06, 0.08, 32),
+        new THREE.RingGeometry(0.07, 0.09, 32),
         new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.4, side: THREE.DoubleSide })
       );
       pulseRing.position.copy(pos);
@@ -156,26 +237,25 @@ function GlobeSection() {
     const mC = makeMarker(cPos);
     globeGroup.add(mP); globeGroup.add(mC);
 
-    // Arc between Portugal and China
-    function makeArc(a, b, segments = 80, height = 0.6) {
+    // Arc — always fully visible
+    function makeArc(a, b, segments, height) {
+      segments = segments || 80;
+      height = height || 0.6;
       const ax = a.clone().normalize();
       const bx = b.clone().normalize();
       const mid = ax.clone().add(bx).normalize().multiplyScalar(R * (1 + height));
       const curve = new THREE.QuadraticBezierCurve3(a.clone(), mid, b.clone());
-      const pts = curve.getPoints(segments);
-      return pts;
+      return curve.getPoints(segments);
     }
     const arcPts = makeArc(pPos, cPos, 120, 0.55);
     const arcGeom = new THREE.BufferGeometry().setFromPoints(arcPts);
-    const arcMat = new THREE.LineBasicMaterial({ color: 0x266DF1, transparent: true, opacity: 0.9 });
+    const arcMat = new THREE.LineBasicMaterial({ color: 0x266DF1, transparent: true, opacity: 0.7 });
     const arc = new THREE.Line(arcGeom, arcMat);
-    // Draw-on effect: use drawRange
-    arcGeom.setDrawRange(0, 0);
     globeGroup.add(arc);
 
-    // Soft glow dot traveling along arc
+    // Traveler dot along arc
     const traveler = new THREE.Mesh(
-      new THREE.SphereGeometry(0.025, 12, 12),
+      new THREE.SphereGeometry(0.03, 12, 12),
       new THREE.MeshBasicMaterial({ color: 0xffffff })
     );
     globeGroup.add(traveler);
@@ -188,22 +268,17 @@ function GlobeSection() {
     function tick() {
       if (!running) return;
       const t = (performance.now() - t0) / 1000;
-      // Rotate based on progress (China-facing → Portugal-facing)
-      const p = stateRef.current.rot; // 0..1 updated from React
-      // Rotate: Europe-facing at p=0 → China-facing at p=1
+      const p = stateRef.current.rot;
+
+      // Rotate: Europe-facing → China-facing based on scroll
       const baseY = -((PORTUGAL.lng) * Math.PI / 180);
       const endY = -((CHINA.lng) * Math.PI / 180);
       globeGroup.rotation.y = baseY + (endY - baseY) * p + t * 0.04;
 
-      // Arc draw-on
-      const drawCount = Math.floor(arcPts.length * Math.min(1, Math.max(0, (p - 0.1) * 1.6)));
-      arcGeom.setDrawRange(0, drawCount);
-
-      // Traveler along arc
-      const tp = (t * 0.15) % 1;
+      // Traveler orbits continuously along the arc
+      const tp = (t * 0.12) % 1;
       const idx = Math.min(arcPts.length - 1, Math.floor(tp * arcPts.length));
       traveler.position.copy(arcPts[idx]);
-      traveler.visible = drawCount > 10;
 
       // Pulse marker rings
       const pulseScale = 1 + Math.sin(t * 2.4) * 0.25;
@@ -232,39 +307,23 @@ function GlobeSection() {
   }, [progress]);
 
   return (
-    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight:'120vh', borderRadius:'24px 24px 0 0', marginTop:'-24px', zIndex:5}}>
+    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight:'120vh', borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5}}>
+      {/* Transition gradient from light BrandStrip above */}
+      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(246,246,246,0.12) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* bg grid */}
       <div className="absolute inset-0 grid-lines opacity-40"/>
 
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-center">
-          {/* Globe — larger, generous padding */}
+          {/* Globe — no frame, full bleed */}
           <div className="md:col-span-7 order-1 relative">
-            <div className="relative w-full mx-auto globe-wrap" style={{aspectRatio:'1/1', maxWidth:'720px', padding:'40px'}}>
+            <div className="relative w-full mx-auto globe-wrap" style={{aspectRatio:'1/1', maxWidth:'720px'}}>
               <canvas ref={canvasRef} className="w-full h-full"/>
-              {/* Corner ticks */}
-              <div className="absolute top-0 left-0 w-6 h-6">
-                <div className="absolute inset-x-0 top-0 h-px bg-white/30"/>
-                <div className="absolute inset-y-0 left-0 w-px bg-white/30"/>
-              </div>
-              <div className="absolute top-0 right-0 w-6 h-6">
-                <div className="absolute inset-x-0 top-0 h-px bg-white/30"/>
-                <div className="absolute inset-y-0 right-0 w-px bg-white/30"/>
-              </div>
-              <div className="absolute bottom-0 left-0 w-6 h-6">
-                <div className="absolute inset-x-0 bottom-0 h-px bg-white/30"/>
-                <div className="absolute inset-y-0 left-0 w-px bg-white/30"/>
-              </div>
-              <div className="absolute bottom-0 right-0 w-6 h-6">
-                <div className="absolute inset-x-0 bottom-0 h-px bg-white/30"/>
-                <div className="absolute inset-y-0 right-0 w-px bg-white/30"/>
-              </div>
-
               {/* Labels */}
-              <div className="absolute top-2 left-2 mono text-[10px] tracking-[0.25em] uppercase text-white/50">
+              <div className="absolute top-2 left-2 mono text-[10px] tracking-[0.25em] uppercase text-white/40">
                 fig.02 · joint venture network
               </div>
-              <div className="absolute bottom-2 right-2 mono text-[10px] tracking-[0.25em] uppercase text-white/50">
+              <div className="absolute bottom-2 right-2 mono text-[10px] tracking-[0.25em] uppercase text-white/40">
                 scroll to rotate ↻
               </div>
               <div className="absolute bottom-2 left-2 mono text-[10px] tracking-[0.25em] uppercase text-azure">
