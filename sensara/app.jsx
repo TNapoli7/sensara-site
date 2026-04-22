@@ -35,7 +35,6 @@ function App() {
       <div className="section-stack">
         <TechStatement/>
         <ProductTypes/>
-        <BrandStrip/>
         <GlobeSection/>
         <Sustainability/>
         <Footer/>

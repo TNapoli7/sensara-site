@@ -484,6 +484,35 @@ function ProductTypes() {
         <div className="eyebrow">Hover to expand · 01–04</div>
         <div className="eyebrow text-shark-400">Sensara Range · v1.0</div>
       </div>
+
+      {/* Brand marquee — integrated at bottom */}
+      <div className="border-t border-white/6 pt-16 pb-12 md:pt-20 md:pb-16">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-10 mb-10">
+          <div className="flex items-baseline justify-between flex-wrap gap-4">
+            <Reveal>
+              <p className="font-display text-xl md:text-2xl tracking-tight text-white/80">Trusted by leading automotive brands.</p>
+            </Reveal>
+            <Reveal>
+              <div className="eyebrow text-shark-600">Global OEM partners · 2020—present</div>
+            </Reveal>
+          </div>
+        </div>
+        <div className="relative overflow-hidden border-y border-white/6 py-8">
+          <div className="flex gap-16 marquee-track whitespace-nowrap">
+            {['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'].map((b,i)=>(
+              <div key={i} className="flex items-center gap-4 shrink-0">
+                <span className="w-1.5 h-1.5 bg-shark-700 rounded-full"></span>
+                <span className="font-medium text-2xl md:text-3xl tracking-[-0.02em] text-shark-600 hover:text-azure transition-colors duration-300" style={{fontFamily:'Poppins, sans-serif'}}>
+                  {b}
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* Fade edges — dark */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-32" style={{background:'linear-gradient(90deg, var(--shark-950), transparent)'}}/>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-32" style={{background:'linear-gradient(-90deg, var(--shark-950), transparent)'}}/>
+        </div>
+      </div>
     </section>
   );
 }
@@ -531,44 +560,7 @@ function ApplicationTile({ a, i }) {
   );
 }
 
-function BrandStrip() {
-  const brands = ['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'];
-  return (
-    <section id="applications" className="section-overlap relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4, color:'#262626'}}>
-      {/* Transition gradient from dark section above */}
-      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.25) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-        {/* Brand wall */}
-        <div>
-          <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
-            <Reveal>
-              <h3 className="font-display text-3xl md:text-5xl tracking-[-0.03em] text-shark-950">Trusted by leading<br/>automotive brands.</h3>
-            </Reveal>
-            <Reveal>
-              <div className="eyebrow text-shark-500">Global OEM partners · 2020—present</div>
-            </Reveal>
-          </div>
-
-          <div className="relative overflow-hidden border-y border-black/10 py-10">
-            <div className="flex gap-16 marquee-track whitespace-nowrap">
-              {[...brands, ...brands, ...brands].map((b,i)=>(
-                <div key={i} className="flex items-center gap-4 shrink-0">
-                  <span className="w-2 h-2 bg-shark-400"></span>
-                  <span className="font-medium text-3xl md:text-4xl tracking-[-0.02em] text-shark-400 hover:text-shark-950 hover:opacity-100 transition-all" style={{fontFamily:'Poppins, sans-serif'}}>
-                    {b}
-                  </span>
-                </div>
-              ))}
-            </div>
-            {/* Fade edges */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-32" style={{background:'linear-gradient(90deg, #F6F6F6, transparent)'}}/>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-32" style={{background:'linear-gradient(-90deg, #F6F6F6, transparent)'}}/>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+/* BrandStrip absorbed into ProductTypes — no standalone section */
 
 /* ————————————————— SECTION 6: SUSTAINABILITY ————————————————— */
 function Sustainability() {
@@ -607,7 +599,7 @@ function Sustainability() {
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
   ];
   return (
-    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6, color:'#262626'}}>
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5, color:'#262626'}}>
       {/* Transition gradient from dark Globe above */}
       <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
@@ -684,7 +676,7 @@ function Sustainability() {
 /* ————————————————— FOOTER ————————————————— */
 function Footer() {
   return (
-    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:7}}>
+    <footer id="contact" className="section-overlap relative bg-shark-950 text-white overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6}}>
       {/* Transition gradient from white Sustainability above */}
       <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* Massive wordmark backdrop */}
@@ -765,4 +757,4 @@ function Footer() {
   );
 }
 
-Object.assign(window, { Nav, Hero, TechStatement, TextureDivider, ProductTypes, BrandStrip, Sustainability, Footer });
+Object.assign(window, { Nav, Hero, TechStatement, TextureDivider, ProductTypes, Sustainability, Footer });

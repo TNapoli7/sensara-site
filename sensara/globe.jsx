@@ -361,9 +361,9 @@ function GlobeSection() {
   }, [progress]);
 
   return (
-    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight:'120vh', borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5}}>
-      {/* Transition gradient from light BrandStrip above */}
-      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(246,246,246,0.12) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
+    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight:'120vh', borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
+      {/* Subtle transition gradient from ProductTypes above */}
+      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* bg grid */}
       <div className="absolute inset-0 grid-lines opacity-40"/>
 
