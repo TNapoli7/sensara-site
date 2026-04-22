@@ -456,28 +456,6 @@ function ProductTypes() {
   const [hovered, setHovered] = useState(0); // default first panel active
   return (
     <section id="product" className="relative bg-shark-950 overflow-hidden">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10 pt-32 md:pt-40 pb-16">
-        <div className="grid md:grid-cols-12 gap-10 mb-16 items-end">
-          <div className="md:col-span-6">
-            <Reveal><Eyebrow className="mb-6">02 · The Range</Eyebrow></Reveal>
-            <div className="overflow-hidden">
-              <Reveal clip>
-                <h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9]" style={{letterSpacing:'-0.04em'}}>
-                  Four materials.<br/>One philosophy.
-                </h2>
-              </Reveal>
-            </div>
-          </div>
-          <div className="md:col-span-5 md:col-start-8">
-            <Reveal>
-              <p className="text-lg text-shark-300 leading-relaxed" style={{textWrap:'pretty'}}>
-                A tuned portfolio of suedes — each engineered for a specific zone of the interior. Hover any panel to explore.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </div>
-
       {/* Full-bleed accordion */}
       <Reveal>
         <div className="relative w-full h-[80vh] min-h-[640px] flex border-y border-white/5">
@@ -548,34 +526,10 @@ function ApplicationTile({ a, i }) {
 function Applications() {
   const brands = ['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'];
   return (
-    <section id="applications" className="relative bg-shark-50 text-shark-950 py-32 md:py-40 overflow-hidden">
+    <section id="applications" className="relative bg-shark-50 text-shark-950 py-20 md:py-28 overflow-hidden">
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-        <div className="grid md:grid-cols-12 gap-10 mb-16 items-end">
-          <div className="md:col-span-6">
-            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>03 · In the Cabin</Eyebrow></Reveal>
-            <div className="overflow-hidden">
-              <Reveal clip>
-                <h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] text-shark-950">
-                  Where Sensara<br/>lives.
-                </h2>
-              </Reveal>
-            </div>
-          </div>
-          <div className="md:col-span-5 md:col-start-8">
-            <Reveal>
-              <p className="text-lg text-shark-700 leading-relaxed" style={{textWrap:'pretty'}}>
-                Every surface a passenger touches, sees, or rests against — tuned for the unique demands of that zone.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-          {APPLICATIONS.map((a,i)=>(<ApplicationTile key={a.name} a={a} i={i}/>))}
-        </div>
-
         {/* Brand wall */}
-        <div className="mt-28 md:mt-36">
+        <div>
           <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
             <Reveal>
               <h3 className="font-display text-3xl md:text-5xl tracking-[-0.03em] text-shark-950">Trusted by leading<br/>automotive brands.</h3>
