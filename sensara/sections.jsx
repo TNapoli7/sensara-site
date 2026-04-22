@@ -31,7 +31,7 @@ function Nav() {
               {l}
             </a>
           ))}
-          <a href="#contact" className="mono text-[11px] tracking-[0.2em] uppercase px-4 py-2 bg-azure hover:bg-white hover:text-azure transition-colors whitespace-nowrap">
+          <a href="#contact" className="mono text-[11px] tracking-[0.2em] uppercase px-4 py-2 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors whitespace-nowrap">
             Request Sample
           </a>
         </div>
@@ -209,19 +209,17 @@ function TechStatement() {
   ];
   return (
     <section id="technology" className="section-overlap relative bg-shark-950 py-24 md:py-36 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:2}}>
-      <div className="absolute inset-0 grid-lines opacity-60"/>
+      <Parallax speed={0.08} className="absolute inset-0"><div className="absolute inset-0 grid-lines opacity-60" style={{height:'130%'}}/></Parallax>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative">
         {/* Header */}
         <div className="grid md:grid-cols-12 gap-10 items-end mb-20">
           <div className="md:col-span-5">
             <Reveal><Eyebrow className="mb-6">01 · Technology</Eyebrow></Reveal>
-            <div className="overflow-hidden">
-              <Reveal clip>
-                <h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">
-                  Engineered<br/>for the<br/><span className="text-azure">Senses.</span>
-                </h2>
-              </Reveal>
-            </div>
+            <RevealLines stagger={0.14}>
+              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">Engineered</h2></div>
+              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">for the</h2></div>
+              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]"><span className="text-azure">Senses.</span></h2></div>
+            </RevealLines>
           </div>
           <div className="md:col-span-6 md:col-start-7">
             <Reveal delay={150}>
@@ -299,11 +297,38 @@ function TheTouch() {
   const sectionRef = useRef(null);
   const [mouse, setMouse] = useState({ x: -200, y: -200 });
   const [isInside, setIsInside] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileReveal, setMobileReveal] = useState(0);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Mobile: scroll-driven reveal instead of cursor
+  const sectionProgress = useSectionProgress(sectionRef);
+  useEffect(() => {
+    if (isMobile) {
+      setMobileReveal(Math.min(1, Math.max(0, (sectionProgress - 0.2) * 2.5)));
+    }
+  }, [sectionProgress, isMobile]);
 
   const handleMouseMove = useCallback((e) => {
+    if (isMobile) return;
     const rect = sectionRef.current?.getBoundingClientRect();
     if (!rect) return;
     setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, [isMobile]);
+
+  // Mobile: touch follow
+  const handleTouchMove = useCallback((e) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const touch = e.touches[0];
+    setMouse({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });
+    setIsInside(true);
   }, []);
 
   return (
@@ -313,37 +338,46 @@ function TheTouch() {
       style={{
         height: '100vh', minHeight:'600px',
         borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:3,
-        cursor: 'none',
+        cursor: isMobile ? 'auto' : 'none',
       }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsInside(true)}
-      onMouseLeave={() => { setIsInside(false); setMouse({ x: -200, y: -200 }); }}
+      onMouseEnter={() => !isMobile && setIsInside(true)}
+      onMouseLeave={() => { if (!isMobile) { setIsInside(false); setMouse({ x: -200, y: -200 }); }}}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={() => { setIsInside(false); setMouse({ x: -200, y: -200 }); }}
     >
       {/* Base layer — dimmed suede texture */}
       <div className="absolute inset-0">
         <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{filter:'brightness(0.25) contrast(1.2)', transform:'scale(1.1)'}}/>
+          style={{
+            filter: isMobile
+              ? `brightness(${0.25 + mobileReveal * 0.85}) contrast(1.2) saturate(${0.5 + mobileReveal * 0.7})`
+              : 'brightness(0.25) contrast(1.2)',
+            transform:'scale(1.1)',
+            transition: isMobile ? 'filter 0.3s ease-out' : 'none',
+          }}/>
       </div>
 
-      {/* Revealed layer — bright suede that shows through the cursor circle */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        clipPath: isInside
-          ? `circle(120px at ${mouse.x}px ${mouse.y}px)`
-          : `circle(0px at ${mouse.x}px ${mouse.y}px)`,
-        transition: isInside ? 'none' : 'clip-path 0.4s ease-in',
-      }}>
-        <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{filter:'brightness(1.1) contrast(1.15) saturate(1.2)', transform:'scale(1.1)'}}/>
-        {/* Soft edge glow inside the reveal circle */}
-        <div className="absolute inset-0" style={{
-          background: `radial-gradient(circle 120px at ${mouse.x}px ${mouse.y}px, rgba(38,109,241,0.08), transparent 70%)`,
-        }}/>
-      </div>
+      {/* Revealed layer — cursor circle (desktop) or touch follow (mobile) */}
+      {(!isMobile || isInside) && (
+        <div className="absolute inset-0 pointer-events-none" style={{
+          clipPath: isInside
+            ? `circle(${isMobile ? '90px' : '120px'} at ${mouse.x}px ${mouse.y}px)`
+            : `circle(0px at ${mouse.x}px ${mouse.y}px)`,
+          transition: isInside ? 'none' : 'clip-path 0.4s ease-in',
+        }}>
+          <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{filter:'brightness(1.1) contrast(1.15) saturate(1.2)', transform:'scale(1.1)'}}/>
+          <div className="absolute inset-0" style={{
+            background: `radial-gradient(circle 120px at ${mouse.x}px ${mouse.y}px, rgba(38,109,241,0.08), transparent 70%)`,
+          }}/>
+        </div>
+      )}
 
-      {/* Custom cursor ring */}
-      {isInside && (
+      {/* Custom cursor ring — desktop only */}
+      {isInside && !isMobile && (
         <div className="absolute pointer-events-none z-30" style={{
           left: mouse.x - 120, top: mouse.y - 120,
           width: 240, height: 240,
@@ -353,22 +387,21 @@ function TheTouch() {
         }}/>
       )}
 
-      {/* Center content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
+      {/* Center content — parallax for depth */}
+      <Parallax speed={-0.06} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
         <Reveal>
           <div className="eyebrow mb-6 text-white/50">The Sensara Experience</div>
         </Reveal>
-        <Reveal delay={100}>
-          <h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white mb-6">
-            Designed to be<br/><span className="text-azure">Felt.</span>
-          </h2>
-        </Reveal>
+        <RevealLines stagger={0.14}>
+          <div><h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white">Designed to be</h2></div>
+          <div><h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em]"><span className="text-azure">Felt.</span></h2></div>
+        </RevealLines>
         <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-white/60 max-w-lg font-light" style={{textWrap:'pretty'}}>
+          <p className="text-lg md:text-xl text-white/60 max-w-lg font-light mt-6" style={{textWrap:'pretty'}}>
             Move your cursor across the surface. The way light shifts reveals the depth of every fiber — just like running your hand across real suede.
           </p>
         </Reveal>
-      </div>
+      </Parallax>
 
       {/* Bottom hint */}
       <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none z-20">
@@ -562,12 +595,15 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
 }
 
 function ProductTypes() {
-  const [hovered, setHovered] = useState(0); // default first panel active
+  const [hovered, setHovered] = useState(0);
+  const [mobileActive, setMobileActive] = useState(0);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
     <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
-      {/* Full-bleed accordion */}
+      {/* Full-bleed accordion — desktop */}
       <Reveal>
-        <div className="relative w-full h-[80vh] min-h-[640px] flex border-y border-white/5">
+        <div className="relative w-full hidden md:flex h-[80vh] min-h-[640px] border-y border-white/5">
           {PRODUCTS.map((p, i) => (
             <AccordionPanel
               key={p.code}
@@ -577,6 +613,59 @@ function ProductTypes() {
               anyHovered={hovered !== null}
               setHovered={setHovered}
             />
+          ))}
+        </div>
+        {/* Mobile stack — tap to expand */}
+        <div className="md:hidden">
+          {PRODUCTS.map((p, i) => (
+            <div key={p.code}
+              onClick={() => setMobileActive(mobileActive === i ? null : i)}
+              className="relative overflow-hidden border-b border-white/10 cursor-pointer"
+              style={{height: mobileActive === i ? '420px' : '80px', transition:'height 0.5s cubic-bezier(0.4,0,0.2,1)'}}
+            >
+              {/* Suede texture */}
+              <div className="absolute inset-0">
+                <img src="sensara/images/suede-texture.jpg" alt="" aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{
+                    filter: p.code === '01' ? 'sepia(0.3) saturate(0.6) brightness(1.05)'
+                      : p.code === '02' ? 'hue-rotate(210deg) saturate(1.6) brightness(0.95)'
+                      : p.code === '03' ? 'hue-rotate(200deg) saturate(2.0) brightness(1.1)'
+                      : 'hue-rotate(330deg) saturate(1.4) brightness(0.9)',
+                  }}/>
+              </div>
+              <div className="absolute inset-0" style={{background: mobileActive === i ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.7)'}}/>
+              {/* Header row */}
+              <div className="relative flex items-center justify-between px-5 h-[80px]">
+                <div className="flex items-center gap-4">
+                  <span className="mono text-[10px] tracking-[0.3em] uppercase text-white/50">{p.code}</span>
+                  <span className="font-display text-xl text-white">{p.name.replace('Sensara ', '')}</span>
+                </div>
+                <span className="text-white/50 text-xl transition-transform duration-300" style={{transform: mobileActive === i ? 'rotate(45deg)' : 'rotate(0)'}}>+</span>
+              </div>
+              {/* Expanded content */}
+              <div className="relative px-5 pb-6" style={{opacity: mobileActive === i ? 1 : 0, transition:'opacity 0.3s ease', transitionDelay: mobileActive === i ? '0.2s' : '0s'}}>
+                <p className="text-base text-white/85 mb-4 font-light">{p.tag}</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 pb-4 border-b border-white/15">
+                  {p.specs.map((s,si)=>(
+                    <div key={si} className="flex items-center gap-2 mono text-[11px] text-white/80">
+                      <span className="w-1 h-1 bg-azure"></span>{s}
+                    </div>
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <div className="eyebrow mb-2 text-white/60">Applications</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.apps.map(a=>(
+                      <span key={a} className="mono text-[10px] tracking-[0.1em] uppercase px-2 py-1 border border-white/25 text-white/90 bg-white/5">{a}</span>
+                    ))}
+                  </div>
+                </div>
+                <a href="#contact" className="mono text-[11px] tracking-[0.25em] uppercase flex items-center gap-2 text-azure mt-3">
+                  <span>Request {p.name}</span><span>→</span>
+                </a>
+              </div>
+            </div>
           ))}
         </div>
       </Reveal>
@@ -694,10 +783,14 @@ function Sustainability() {
   }, []);
 
   const pillars = [
-    { n:'01', title:'Recycled Fibers', desc:'Up to 70% recycled content across the Sensara portfolio. Turning waste into premium material.' },
-    { n:'02', title:'Solvent Free',    desc:'100% solvent-free production. Water-based processes where applicable. Zero harmful emissions.' },
-    { n:'03', title:'Mono-component Recyclability', desc:'Sensara Air and Core are 100% mono-component (PES), ensuring full recyclability at vehicle end-of-life. Circular by design.' },
-    { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.' },
+    { n:'01', title:'Recycled Fibers', desc:'Up to 70% recycled content across the Sensara portfolio. Turning waste into premium material.',
+      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M7 21l4-7h6l4 7"/><path d="M14 3v11"/><circle cx="14" cy="14" r="3"/><path d="M5 14a9 9 0 1 1 18 0" strokeDasharray="3,2"/></svg> },
+    { n:'02', title:'Solvent Free', desc:'100% solvent-free production. Water-based processes where applicable. Zero harmful emissions.',
+      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 3l-5 10a6 6 0 1 0 10 0L14 3z"/><path d="M11 18h6" strokeDasharray="2,2"/></svg> },
+    { n:'03', title:'Mono-component Recyclability', desc:'Sensara Air and Core are 100% mono-component (PES), ensuring full recyclability at vehicle end-of-life. Circular by design.',
+      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 5l6 4-6 4"/><path d="M20 15l-6 4 6 4"/><path d="M14 9v10"/><circle cx="14" cy="14" r="11"/></svg> },
+    { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.',
+      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 22C6 14 14 6 22 6c0 8-8 16-16 16z"/><path d="M14 14l-4 4"/><path d="M14 14l4-4" strokeDasharray="2,2"/></svg> },
   ];
   return (
     <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6, color:'#262626'}}>
@@ -708,16 +801,69 @@ function Sustainability() {
           {/* Image col */}
           <div className="md:col-span-5">
             <Reveal>
-              <div className="relative aspect-[4/5] bg-shark-100 overflow-hidden">
-                <div className="absolute inset-0" style={{
-                  background:`repeating-linear-gradient(135deg, #E7E7E7 0 14px, #D1D1D1 14px 15px)`,
-                }}/>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center px-6">
-                    <div className="mono text-[10px] tracking-[0.3em] uppercase text-shark-500 mb-2">[ SUSTAINABILITY EDITORIAL · RECYCLED FIBER CLOSE-UP ]</div>
-                    <div className="font-display text-2xl text-shark-700" style={{letterSpacing:'-0.02em'}}>Recycled fiber · macro</div>
+              <Parallax speed={-0.08} className="relative aspect-[4/5] overflow-hidden" style={{background:'#0a0f0a', borderRadius:'16px'}}>
+                {/* Abstract fiber generative visual */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="fiberGrad1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#1a6b3c" stopOpacity="0.6"/>
+                      <stop offset="100%" stopColor="#0d3d22" stopOpacity="0.3"/>
+                    </linearGradient>
+                    <linearGradient id="fiberGrad2" x1="0" y1="1" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#266DF1" stopOpacity="0.15"/>
+                      <stop offset="100%" stopColor="#1a6b3c" stopOpacity="0.4"/>
+                    </linearGradient>
+                    <filter id="fiberBlur">
+                      <feGaussianBlur stdDeviation="1.5"/>
+                    </filter>
+                  </defs>
+                  {/* Organic fiber strands */}
+                  {[...Array(30)].map((_, i) => {
+                    const x1 = (i * 37 + 10) % 400;
+                    const y1 = (i * 53) % 500;
+                    const cx1 = x1 + Math.sin(i) * 80;
+                    const cy1 = y1 + 60;
+                    const cx2 = x1 + Math.cos(i) * 60;
+                    const cy2 = y1 + 120;
+                    const x2 = (x1 + 40 + i * 11) % 400;
+                    const y2 = Math.min(500, y1 + 150 + (i % 5) * 30);
+                    return (
+                      <path key={i}
+                        d={`M${x1} ${y1} C${cx1} ${cy1} ${cx2} ${cy2} ${x2} ${y2}`}
+                        fill="none"
+                        stroke={i % 3 === 0 ? '#1a6b3c' : i % 3 === 1 ? '#266DF1' : '#2a8a4e'}
+                        strokeWidth={0.8 + (i % 4) * 0.4}
+                        strokeOpacity={0.15 + (i % 5) * 0.06}
+                        filter={i % 4 === 0 ? 'url(#fiberBlur)' : undefined}
+                      />
+                    );
+                  })}
+                  {/* Circular nodes — recycled fiber cross-sections */}
+                  {[...Array(12)].map((_, i) => (
+                    <circle key={`c${i}`}
+                      cx={(i * 67 + 30) % 380}
+                      cy={(i * 89 + 40) % 480}
+                      r={3 + (i % 4) * 2}
+                      fill="none"
+                      stroke={i % 2 === 0 ? '#1a6b3c' : '#266DF1'}
+                      strokeWidth="0.6"
+                      strokeOpacity={0.2 + (i % 3) * 0.1}
+                    />
+                  ))}
+                  {/* Grain overlay */}
+                  <rect width="400" height="500" fill="url(#fiberGrad2)" opacity="0.5"/>
+                </svg>
+                {/* Center label */}
+                <div className="absolute inset-0 flex items-end p-8">
+                  <div>
+                    <div className="mono text-[10px] tracking-[0.25em] uppercase text-white/30 mb-2">[ recycled fiber · macro ]</div>
+                    <div className="font-display text-3xl text-white/60 tracking-tight" style={{letterSpacing:'-0.02em'}}>70% Recycled</div>
+                    <div className="text-sm text-white/30 mt-1">PES fiber cross-section · 200× magnification</div>
                   </div>
                 </div>
+                {/* Radial glow */}
+                <div className="absolute inset-0" style={{background:'radial-gradient(ellipse at 30% 40%, rgba(26,107,60,0.15), transparent 60%)'}}/>
+                <div className="absolute inset-0" style={{background:'radial-gradient(ellipse at 70% 70%, rgba(38,109,241,0.08), transparent 50%)'}}/>
                 {/* stats bottom-left */}
                 <div className="absolute left-6 bottom-6 right-6 bg-white p-5 border border-black/5">
                   <div className="eyebrow mb-2" style={{color:'#737373'}}>Recycled Content</div>
@@ -730,28 +876,28 @@ function Sustainability() {
                     <div ref={barRef} className="absolute inset-y-0 left-0" style={{width:'0%', background:'var(--azure)'}}></div>
                   </div>
                 </div>
-              </div>
+              </Parallax>
             </Reveal>
           </div>
 
           {/* Content col */}
           <div className="md:col-span-7">
             <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>03 · Sustainability</Eyebrow></Reveal>
-            <div className="overflow-hidden mb-8">
-              <Reveal clip>
-                <h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">
-                  Engineered with<br/><span style={{color:'var(--success)'}}>Purpose.</span>
-                </h2>
-              </Reveal>
-            </div>
+            <RevealLines stagger={0.14} className="mb-8">
+              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">Engineered with</h2></div>
+              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]"><span style={{color:'var(--success)'}}>Purpose.</span></h2></div>
+            </RevealLines>
 
             <div className="grid sm:grid-cols-2 gap-px bg-black/10 mt-10">
               {pillars.map((p,i)=>(
                 <Reveal key={p.n} delay={i*100}>
                   <div className="bg-white p-6 md:p-8 h-full">
-                    <div className="flex items-baseline gap-3 mb-4">
-                      <span className="font-display text-3xl tracking-tight" style={{color:'var(--success)'}}>{p.n}</span>
-                      <span className="h-px flex-1 bg-black/10"></span>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-baseline gap-3">
+                        <span className="font-display text-3xl tracking-tight" style={{color:'var(--success)'}}>{p.n}</span>
+                        <span className="h-px flex-1 bg-black/10" style={{minWidth:'20px'}}></span>
+                      </div>
+                      <div style={{color:'var(--success)'}}>{p.icon}</div>
                     </div>
                     <h3 className="font-display text-xl md:text-2xl tracking-tight mb-3">{p.title}</h3>
                     <p className="text-sm text-shark-700 leading-relaxed" style={{textWrap:'pretty'}}>{p.desc}</p>
@@ -788,14 +934,14 @@ function Footer() {
           </Reveal>
           <div className="grid md:grid-cols-12 gap-10 mb-20">
             <div className="md:col-span-7">
-              <Reveal>
-                <h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em] mb-8">
-                  Specify Sensara<br/>in your next<br/><span className="text-azure">interior.</span>
-                </h2>
-              </Reveal>
+              <RevealLines stagger={0.12} className="mb-8">
+                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]">Specify Sensara</h2></div>
+                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]">in your next</h2></div>
+                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]"><span className="text-azure">interior.</span></h2></div>
+              </RevealLines>
               <Reveal delay={150}>
                 <div className="flex flex-wrap gap-3">
-                  <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 bg-azure hover:bg-white hover:text-azure transition-colors">
+                  <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors">
                     Get in Touch
                   </a>
                   <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">

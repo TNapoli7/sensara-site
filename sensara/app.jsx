@@ -33,12 +33,12 @@ function App() {
       <Nav/>
       <Hero/>
       <div className="section-stack">
-        <TechStatement/>
-        <TheTouch/>
-        <ProductTypes/>
-        <GlobeSection/>
-        <Sustainability/>
-        <Footer/>
+        <SectionEntry><TechStatement/></SectionEntry>
+        <SectionEntry><TheTouch/></SectionEntry>
+        <SectionEntry><ProductTypes/></SectionEntry>
+        <SectionEntry><GlobeSection/></SectionEntry>
+        <SectionEntry><Sustainability/></SectionEntry>
+        <SectionEntry><Footer/></SectionEntry>
       </div>
     </>
   );

@@ -461,4 +461,117 @@ function InteriorHotspots({ active, setActive }) {
   );
 }
 
-Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, StaggerReveal, Parallax, SuedeScrollTexture, SuedeTile, Hotspot, InteriorHotspots, HOTSPOT_DATA });
+/* ————————————————— RevealLines — splits children into lines and staggers them ————————————————— */
+function RevealLines({ children, stagger = 0.12, className = '' }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.gsap) return;
+    const gsap = window.gsap;
+    const lines = el.children;
+    if (!lines.length) return;
+
+    gsap.set(lines, { y: 60, opacity: 0, rotateX: 8 });
+
+    const tl = gsap.to(lines, {
+      y: 0,
+      opacity: 1,
+      rotateX: 0,
+      duration: 1.0,
+      stagger: stagger,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    });
+
+    return () => {
+      if (tl.scrollTrigger) tl.scrollTrigger.kill();
+      tl.kill();
+    };
+  }, [stagger]);
+
+  return <div ref={ref} className={className} style={{perspective:'800px'}}>{children}</div>;
+}
+
+/* ————————————————— ParallaxImage — image with parallax + reveal ————————————————— */
+function ParallaxImage({ src, alt, speed = -0.12, className = '', style = {} }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.gsap) return;
+    const gsap = window.gsap;
+    const img = el.querySelector('img');
+    if (!img) return;
+
+    // Parallax on the image
+    gsap.to(img, {
+      yPercent: speed * 100,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
+
+    // Reveal clip
+    gsap.fromTo(el,
+      { clipPath: 'inset(15% 0% 15% 0%)' },
+      {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  }, [speed]);
+
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`} style={style}>
+      <img src={src} alt={alt || ''} className="w-full h-full object-cover" style={{transform:'scale(1.2)'}}/>
+    </div>
+  );
+}
+
+/* ————————————————— SectionEntry — animates section entrance with scale + shadow ————————————————— */
+function SectionEntry({ children, className = '' }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.gsap) return;
+    const gsap = window.gsap;
+
+    gsap.fromTo(el,
+      {
+        scale: 0.97,
+        boxShadow: '0 -20px 80px rgba(0,0,0,0)',
+      },
+      {
+        scale: 1,
+        boxShadow: '0 -20px 80px rgba(0,0,0,0.4)',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 95%',
+          end: 'top 40%',
+          scrub: 0.8,
+        },
+      }
+    );
+  }, []);
+
+  return <div ref={ref} className={className} style={{transformOrigin:'top center'}}>{children}</div>;
+}
+
+Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, RevealLines, StaggerReveal, Parallax, ParallaxImage, SectionEntry, SuedeScrollTexture, SuedeTile, Hotspot, InteriorHotspots, HOTSPOT_DATA });
