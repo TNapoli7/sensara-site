@@ -332,46 +332,40 @@ function InteriorHotspots({ active, setActive }) {
   const containerRef = useRef(null);
   const panelRef = useRef(null);
   const contentRef = useRef(null);
-  const prevActive = useRef(null);
   const activeSpot = HOTSPOT_DATA.find(s => s.id === active);
 
   // Animate slide panel with GSAP
   useEffect(() => {
     const panel = panelRef.current;
-    const content = contentRef.current;
     if (!panel || !window.gsap) return;
     const gsap = window.gsap;
 
-    if (activeSpot && prevActive.current !== active) {
-      // Kill any running animations
+    if (active) {
+      // Kill running anims
       gsap.killTweensOf(panel);
-      gsap.killTweensOf(content?.children || []);
 
       // Slide panel in from right
-      const tl = gsap.timeline();
-      tl.fromTo(panel,
-        { xPercent: 100, opacity: 0 },
-        { xPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+      gsap.fromTo(panel,
+        { xPercent: 100 },
+        { xPercent: 0, duration: 0.6, ease: 'power3.out',
+          onComplete: () => {
+            // Stagger content after panel is visible
+            const content = contentRef.current;
+            if (content?.children?.length) {
+              gsap.fromTo(content.children,
+                { y: 30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out' }
+              );
+            }
+          }
+        }
       );
-
-      // Stagger content elements
-      if (content?.children) {
-        tl.fromTo(content.children,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out' },
-          '-=0.3'
-        );
-      }
-    }
-
-    if (!activeSpot && prevActive.current) {
+    } else {
       // Slide out
       gsap.to(panel, {
-        xPercent: 105, opacity: 0, duration: 0.4, ease: 'power2.in',
+        xPercent: 105, duration: 0.4, ease: 'power2.in',
       });
     }
-
-    prevActive.current = active;
   }, [active]);
 
   return (
@@ -398,7 +392,6 @@ function InteriorHotspots({ active, setActive }) {
           <button
             key={spot.id}
             onClick={() => setActive(active === spot.id ? null : spot.id)}
-            onMouseEnter={() => !active && setActive(spot.id)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
             style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center' }}
             aria-label={spot.label}
@@ -435,79 +428,69 @@ function InteriorHotspots({ active, setActive }) {
           </button>
         ))}
 
-        {/* Slide-in detail panel — right side */}
+        {/* Slide-in detail panel — right side, always mounted */}
         <div ref={panelRef}
           className="absolute top-0 right-0 bottom-0 z-20 w-full md:w-[45%]"
           style={{
             transform: 'translateX(105%)',
-            opacity: 0,
             pointerEvents: activeSpot ? 'auto' : 'none',
           }}
         >
-          {activeSpot && (
-            <div className="relative w-full h-full flex flex-col">
-              {/* Full-height product image */}
-              <div className="absolute inset-0 overflow-hidden">
-                <img src={activeSpot.image} alt={activeSpot.label} loading="lazy"
+          <div className="relative w-full h-full flex flex-col">
+            {/* Full-height product image */}
+            <div className="absolute inset-0 overflow-hidden">
+              {activeSpot && (
+                <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                   style={{transform:'scale(1.05)'}}/>
-                {/* Gradient overlays for text readability */}
-                <div className="absolute inset-0" style={{
-                  background:'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.5) 100%)'
-                }}/>
-                <div className="absolute inset-0" style={{
-                  background:'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.8) 100%)'
-                }}/>
-              </div>
+              )}
+              {/* Gradient overlays for text readability */}
+              <div className="absolute inset-0" style={{
+                background:'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.5) 100%)'
+              }}/>
+              <div className="absolute inset-0" style={{
+                background:'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.8) 100%)'
+              }}/>
+            </div>
 
-              {/* Left edge line accent */}
-              <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-azure z-10"/>
+            {/* Left edge line accent */}
+            <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-azure z-10"/>
 
-              {/* Close button */}
-              <button
-                onClick={() => setActive(null)}
-                className="absolute top-5 right-5 z-30 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-azure hover:bg-azure/10 transition-all duration-300"
-                style={{backdropFilter:'blur(8px)', background:'rgba(0,0,0,0.3)'}}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="1.5">
-                  <path d="M1 1l12 12M13 1L1 13"/>
-                </svg>
-              </button>
+            {/* Close button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); setActive(null); }}
+              className="absolute top-5 right-5 z-30 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-azure hover:bg-azure/10 transition-all duration-300"
+              style={{backdropFilter:'blur(8px)', background:'rgba(0,0,0,0.3)'}}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="1.5">
+                <path d="M1 1l12 12M13 1L1 13"/>
+              </svg>
+            </button>
 
-              {/* Content — staggered reveal */}
+            {/* Content — staggered reveal */}
+            {activeSpot && (
               <div ref={contentRef} className="relative z-20 flex flex-col justify-end h-full p-8 md:p-10">
-                {/* Product badge */}
                 <div>
                   <span className="mono text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 bg-azure text-white inline-block mb-6">
                     {activeSpot.product}
                   </span>
                 </div>
-
-                {/* Title */}
                 <div>
                   <h3 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-[-0.04em] text-white leading-[0.95] mb-4">
                     {activeSpot.label}
                   </h3>
                 </div>
-
-                {/* Spec line */}
                 <div>
                   <p className="mono text-[11px] tracking-[0.15em] text-azure mb-5">{activeSpot.spec}</p>
                 </div>
-
-                {/* Divider */}
                 <div>
                   <div className="w-16 h-px bg-white/20 mb-5"/>
                 </div>
-
-                {/* Description */}
                 <div>
                   <p className="text-base text-white/75 leading-relaxed max-w-sm" style={{textWrap:'pretty'}}>
                     {activeSpot.detail}
                   </p>
                 </div>
-
-                {/* CTA */}
                 <div>
                   <a href="#contact" className="inline-flex items-center gap-3 mt-8 mono text-[11px] tracking-[0.2em] uppercase text-white hover:text-azure transition-colors group/cta">
                     <span>Request Sample</span>
@@ -515,14 +498,9 @@ function InteriorHotspots({ active, setActive }) {
                   </a>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-
-        {/* Click-away overlay when panel is open */}
-        {active && (
-          <div className="absolute inset-0 z-[15] cursor-pointer" onClick={() => setActive(null)}/>
-        )}
       </div>
 
     </div>
