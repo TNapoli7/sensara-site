@@ -283,7 +283,7 @@ function Hotspot({ x, y, label, active, onHover, onLeave }) {
 const HOTSPOT_DATA = [
   {
     id: 'pillow',
-    x: 18, y: 18,
+    x: 12, y: 18,
     label: 'Head Pillow Cushions',
     product: 'Sensara Skin',
     spec: '260 gsm · 90% PES / 10% Spandex',
@@ -292,7 +292,7 @@ const HOTSPOT_DATA = [
   },
   {
     id: 'seat',
-    x: 30, y: 50,
+    x: 22, y: 50,
     label: 'Seat Systems',
     product: 'Sensara Core',
     spec: '320 gsm · 100% PES · Solvent free',
@@ -301,7 +301,7 @@ const HOTSPOT_DATA = [
   },
   {
     id: 'headliner',
-    x: 50, y: 5,
+    x: 42, y: 5,
     label: 'Headliner & Pillars',
     product: 'Sensara Air',
     spec: '280 gsm · 100% PES · Mono-component',
@@ -319,7 +319,7 @@ const HOTSPOT_DATA = [
   },
   {
     id: 'door',
-    x: 58, y: 55,
+    x: 54, y: 45,
     label: 'Door Panels',
     product: 'Sensara Plus',
     spec: '300 gsm · 70% PES / 30% PU · Water based',
@@ -448,15 +448,6 @@ function InteriorHotspots({ active, setActive }) {
         )}
       </div>
 
-      {/* Bottom caption bar */}
-      <div className="flex items-center justify-between px-4 py-3" style={{background:'rgba(26,26,26,0.95)'}}>
-        <span className="mono text-[10px] tracking-[0.2em] uppercase text-white/40">
-          [ fig.01 — interior application map ]
-        </span>
-        <span className="mono text-[10px] tracking-[0.2em] uppercase text-white/40">
-          {active ? '← click to close' : 'select a zone'}
-        </span>
-      </div>
     </div>
   );
 }
