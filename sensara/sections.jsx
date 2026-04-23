@@ -31,7 +31,7 @@ function Nav() {
               {l}
             </a>
           ))}
-          <a href="#contact" className="mono text-[11px] tracking-[0.2em] uppercase px-4 py-2 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors whitespace-nowrap">
+          <a href="#contact" className="mono text-[11px] tracking-[0.2em] uppercase px-4 py-2 bg-azure text-white hover:bg-white hover:text-black transition-colors whitespace-nowrap">
             Request Sample
           </a>
         </div>
@@ -555,7 +555,7 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
         </div>
 
         <div className="flex items-end justify-between">
-          <a href="#contact" className="mono text-[11px] tracking-[0.25em] uppercase inline-flex items-center gap-2 px-4 py-2.5 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors pointer-events-auto">
+          <a href="#contact" className="mono text-[11px] tracking-[0.25em] uppercase inline-flex items-center gap-2 px-4 py-2.5 bg-azure text-white hover:bg-white hover:text-black transition-colors pointer-events-auto">
             <span>Request {p.name}</span>
             <span className="inline-block">→</span>
           </a>
@@ -879,7 +879,7 @@ function Footer() {
               </RevealLines>
               <Reveal delay={150}>
                 <div className="flex flex-wrap gap-3">
-                  <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors">
+                  <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 bg-azure text-white hover:bg-white hover:text-black transition-colors">
                     Get in Touch
                   </a>
                   <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
