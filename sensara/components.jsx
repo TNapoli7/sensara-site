@@ -409,7 +409,7 @@ function InteriorHotspots({ active, setActive }) {
             onMouseEnter={() => setHoveredSpot(spot.label)}
             onMouseLeave={() => setHoveredSpot(null)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
-            style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'none' }}
+            style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center', cursor: cursorVisible ? 'none' : 'pointer' }}
             aria-label={spot.label}
           >
             <span className="relative block">

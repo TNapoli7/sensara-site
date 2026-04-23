@@ -201,10 +201,11 @@ function TechStatement() {
         <div className="grid md:grid-cols-12 gap-10 items-end mb-20">
           <div className="md:col-span-5">
             <Reveal><Eyebrow className="mb-6">01 · Technology</Eyebrow></Reveal>
+            <h2 className="sr-only">Engineered for the Senses</h2>
             <RevealLines stagger={0.14}>
-              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">Engineered</h2></div>
-              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">for the</h2></div>
-              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]"><span className="text-azure">Senses.</span></h2></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">for the</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block text-azure" role="presentation">Senses.</span></div>
             </RevealLines>
           </div>
           <div className="md:col-span-6 md:col-start-7">
@@ -256,7 +257,6 @@ function TechStatement() {
                 <button key={spot.id}
                   onClick={() => setHover(hover === spot.id ? null : spot.id)}
                   onMouseEnter={() => setHover(spot.id)}
-                  onMouseLeave={() => setHover(null)}
                   className="text-left px-4 py-4 transition-all duration-300"
                   style={{
                     background: hover === spot.id ? 'rgba(38,109,241,0.12)' : 'rgba(255,255,255,0.03)',
@@ -379,8 +379,8 @@ function TheTouch() {
           <div className="eyebrow mb-6 text-white/50">The Sensara Experience</div>
         </Reveal>
         <RevealLines stagger={0.14}>
-          <div><h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white">Designed to be</h2></div>
-          <div><h2 className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em]"><span className="text-azure">Felt.</span></h2></div>
+          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Designed to be</span></div>
+          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">Felt.</span></div>
         </RevealLines>
         <Reveal delay={200}>
           <p className="text-lg md:text-xl text-white/60 max-w-lg font-light mt-6" style={{textWrap:'pretty'}}>
@@ -583,7 +583,12 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
 function ProductTypes() {
   const [hovered, setHovered] = useState(0);
   const [mobileActive, setMobileActive] = useState(0);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   return (
     <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
@@ -741,7 +746,7 @@ function Sustainability() {
             <Reveal>
               <Parallax speed={-0.08} className="relative aspect-[4/5] overflow-hidden" style={{background:'#0a0f0a', borderRadius:'16px'}}>
                 {/* Abstract fiber generative visual */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
                   <defs>
                     <linearGradient id="fiberGrad1" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stopColor="#1a6b3c" stopOpacity="0.6"/>
@@ -822,8 +827,8 @@ function Sustainability() {
           <div className="md:col-span-7">
             <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>03 · Sustainability</Eyebrow></Reveal>
             <RevealLines stagger={0.14} className="mb-8">
-              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]">Engineered with</h2></div>
-              <div><h2 className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em]"><span style={{color:'var(--success)'}}>Purpose.</span></h2></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered with</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation" style={{color:'var(--success)'}}>Purpose.</span></div>
             </RevealLines>
 
             <div className="grid sm:grid-cols-2 gap-px bg-black/10 mt-10">
@@ -873,9 +878,9 @@ function Footer() {
           <div className="grid md:grid-cols-12 gap-10 mb-20">
             <div className="md:col-span-7">
               <RevealLines stagger={0.12} className="mb-8">
-                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]">Specify Sensara</h2></div>
-                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]">in your next</h2></div>
-                <div><h2 className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em]"><span className="text-azure">interior.</span></h2></div>
+                <div><span className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em] block" role="presentation">Specify Sensara</span></div>
+                <div><span className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em] block" role="presentation">in your next</span></div>
+                <div><span className="font-display text-[clamp(40px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">interior.</span></div>
               </RevealLines>
               <Reveal delay={150}>
                 <div className="flex flex-wrap gap-3">
@@ -900,7 +905,7 @@ function Footer() {
                   </div>
                   <div>
                     <div className="eyebrow mb-2">Parent Company</div>
-                    <a href="https://carlom.com" className="text-lg hover:text-azure">carlom.com</a>
+                    <a href="https://carlom.com" target="_blank" rel="noopener noreferrer" className="text-lg hover:text-azure">carlom.com</a>
                   </div>
                   <div>
                     <div className="eyebrow mb-2">Headquarters</div>
@@ -928,7 +933,7 @@ function Footer() {
                 <span className="absolute inset-0 border border-white/70"></span>
                 <span className="absolute inset-1 bg-white/70"></span>
               </span>
-              <span className="text-sm text-white/70">Sensara is a product of <a href="https://carlom.com" className="underline hover:text-azure">Carlom</a> - Innovating textiles since 1966.</span>
+              <span className="text-sm text-white/70">Sensara is a product of <a href="https://carlom.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-azure">Carlom</a> - Innovating textiles since 1966.</span>
             </div>
             <div className="flex items-center gap-6 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
               <a href="#" className="hover:text-azure">Privacy</a>

@@ -359,9 +359,15 @@ function GlobeSection() {
       window.removeEventListener('mouseup', onUp);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
+      // Clean up all Three.js resources
+      scene.traverse((obj) => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+          else obj.material.dispose();
+        }
+      });
       renderer.dispose();
-      dotGeom.dispose(); dotMat.dispose();
-      arcGeom.dispose(); arcMat.dispose();
     };
   }, []);
 
@@ -382,7 +388,7 @@ function GlobeSection() {
           {/* Globe — no frame, full bleed */}
           <div className="md:col-span-7 order-1 relative">
             <div className="relative w-full mx-auto globe-wrap" style={{aspectRatio:'1/1', maxWidth:'720px'}}>
-              <canvas ref={canvasRef} className="w-full h-full"/>
+              <canvas ref={canvasRef} className="w-full h-full" role="img" aria-label="Interactive 3D globe showing Sensara production locations in Portugal and China" style={{touchAction:'none'}}/>
               {/* Labels */}
               <div className="absolute top-2 left-2 mono text-[10px] tracking-[0.25em] uppercase text-white/40">
                 fig.02 · joint venture network
