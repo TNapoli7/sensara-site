@@ -456,7 +456,7 @@ function InteriorHotspots({ active, setActive }) {
             {/* Close button — top left */}
             <button
               onClick={() => setActive(null)}
-              className="absolute top-4 left-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors"
+              className="close-btn absolute top-4 left-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20"
               style={{background:'rgba(255,255,255,0.05)', cursor:'pointer'}}
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">

@@ -27,7 +27,7 @@ function Nav() {
         </a>
         <div className="hidden lg:flex items-center gap-x-7 xl:gap-x-9">
           {items.map(([l,h]) => (
-            <a key={h} href={h} className="mono text-[11px] tracking-[0.2em] uppercase text-white/80 hover:text-azure transition-colors whitespace-nowrap">
+            <a key={h} href={h} className="nav-link mono text-[11px] tracking-[0.2em] uppercase text-white/80 hover:text-white transition-colors whitespace-nowrap">
               {l}
             </a>
           ))}
@@ -837,13 +837,13 @@ function Sustainability() {
             <div className="grid sm:grid-cols-2 gap-px bg-black/10 mt-10">
               {pillars.map((p,i)=>(
                 <Reveal key={p.n} delay={i*100}>
-                  <div className="bg-white p-6 md:p-8 h-full">
+                  <div className="bg-white p-6 md:p-8 h-full pillar-card cursor-default">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-baseline gap-3">
                         <span className="font-display text-3xl tracking-tight" style={{color:'var(--success)'}}>{p.n}</span>
                         <span className="h-px flex-1 bg-black/10" style={{minWidth:'20px'}}></span>
                       </div>
-                      <div style={{color:'var(--success)'}}>{p.icon}</div>
+                      <div className="pillar-icon" style={{color:'var(--success)'}}>{p.icon}</div>
                     </div>
                     <h3 className="font-display text-xl md:text-2xl tracking-tight mb-3">{p.title}</h3>
                     <p className="text-sm text-shark-700 leading-relaxed" style={{textWrap:'pretty'}}>{p.desc}</p>
@@ -890,10 +890,10 @@ function Footer() {
                   <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 bg-azure text-white hover:bg-white hover:text-black transition-colors">
                     Get in Touch
                   </a>
-                  <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
+                  <a href="mailto:marketing@carlom.com" className="cta-outline mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20">
                     Request Samples
                   </a>
-                  <a href="mailto:marketing@carlom.com?subject=Tech%20Sheet%20Request" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
+                  <a href="mailto:marketing@carlom.com?subject=Tech%20Sheet%20Request" className="cta-outline mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20">
                     Download Tech Sheet
                   </a>
                 </div>
