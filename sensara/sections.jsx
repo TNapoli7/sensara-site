@@ -113,7 +113,7 @@ function Hero() {
               loop
               playsInline
               preload="auto"
-              poster=""
+              poster="sensara/images/suede-texture.jpg"
             >
               <source src="sensara/hero.mp4" type="video/mp4" />
             </video>
@@ -181,20 +181,6 @@ function Hero() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ————————————————— TEXTURE DIVIDER ————————————————— */
-function TextureDivider({ variant = 'dark' }) {
-  const cls = variant === 'light' ? 'suede-light' : variant === 'azure' ? 'suede-azure' : 'suede-bg';
-  return (
-    <div className={`relative w-full h-10 md:h-14 ${cls} overflow-hidden`}>
-      <div className="absolute inset-0 opacity-40" style={{
-        backgroundImage: 'repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 80px)',
-      }}/>
-      <div className="absolute inset-y-0 left-0 w-24 md:w-40" style={{background: variant==='light' ? 'linear-gradient(90deg, #F6F6F6, transparent)' : 'linear-gradient(90deg, #0d0d0d, transparent)'}}/>
-      <div className="absolute inset-y-0 right-0 w-24 md:w-40" style={{background: variant==='light' ? 'linear-gradient(-90deg, #F6F6F6, transparent)' : 'linear-gradient(-90deg, #0d0d0d, transparent)'}}/>
-    </div>
   );
 }
 
@@ -671,7 +657,7 @@ function ProductTypes() {
       </Reveal>
 
       {/* Brand marquee — integrated at bottom */}
-      <div className="border-t border-white/6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div className="border-t border-white/[0.06] pt-16 pb-12 md:pt-20 md:pb-16">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10 mb-10">
           <div className="flex items-baseline justify-between flex-wrap gap-4">
             <Reveal>
@@ -682,7 +668,7 @@ function ProductTypes() {
             </Reveal>
           </div>
         </div>
-        <div className="relative overflow-hidden border-y border-white/6 py-8">
+        <div className="relative overflow-hidden border-y border-white/[0.06] py-8">
           <div className="flex gap-16 marquee-track whitespace-nowrap">
             {['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC'].map((b,i)=>(
               <div key={i} className="flex items-center gap-4 shrink-0">
@@ -702,50 +688,7 @@ function ProductTypes() {
   );
 }
 
-/* ————————————————— SECTION 4: APPLICATIONS + BRANDS ————————————————— */
-const APPLICATIONS = [
-  { name: 'Headliner & Pillars', desc: 'Elegant and refined.', variant: 'dark', num:'A1' },
-  { name: 'Seat Systems', desc: 'Comfortable, Ergonomic, Breathable.', variant: 'azure', num:'A2' },
-  { name: 'Door Panels', desc: 'Robust, yet Elegant.', variant: 'dark', num:'A3' },
-  { name: 'Instrument Panels', desc: 'Sleek, functional.', variant: 'light', num:'A4' },
-  { name: 'Head Pillow Cushions', desc: 'Soft and comfortable.', variant: 'dark', num:'A5' },
-  { name: 'Sunvisors', desc: 'Glare-reduction and resilient.', variant: 'light', num:'A6' },
-];
-
-function ApplicationTile({ a, i }) {
-  const [hovered, setHovered] = useState(false);
-  const isLight = a.variant === 'light';
-  return (
-    <Reveal delay={i*80}>
-      <div
-        onMouseEnter={()=>setHovered(true)}
-        onMouseLeave={()=>setHovered(false)}
-        className="relative h-[340px] md:h-[380px] overflow-hidden group cursor-pointer border border-black/5"
-      >
-        <SuedeTile variant={a.variant} className="absolute inset-0">
-          <div className="absolute inset-0 transition-transform duration-[1200ms]" style={{
-            transform: hovered ? 'scale(1.08)' : 'scale(1)',
-          }}/>
-        </SuedeTile>
-        {/* Overlay */}
-        <div className="absolute inset-0 flex flex-col justify-between p-6">
-          <div className="flex items-start justify-between">
-            <span className={`mono text-[10px] tracking-[0.25em] uppercase ${isLight ? 'text-black/60' : 'text-white/60'}`}>{a.num} / Application</span>
-            <span className={`w-8 h-8 flex items-center justify-center border ${hovered ? 'bg-azure border-azure text-white' : (isLight ? 'border-black/30 text-black/70' : 'border-white/30 text-white/70')} transition-all`}>
-              ↗
-            </span>
-          </div>
-          <div>
-            <h3 className={`font-display text-2xl md:text-3xl tracking-tight mb-2 ${isLight ? 'text-black' : 'text-white'}`}>{a.name}</h3>
-            <p className={`text-sm ${isLight ? 'text-black/70' : 'text-white/75'}`}>{a.desc}</p>
-          </div>
-        </div>
-      </div>
-    </Reveal>
-  );
-}
-
-/* BrandStrip absorbed into ProductTypes — no standalone section */
+/* Dead code removed: APPLICATIONS, ApplicationTile, BrandStrip */
 
 /* ————————————————— SECTION 6: SUSTAINABILITY ————————————————— */
 function Sustainability() {
@@ -999,4 +942,4 @@ function Footer() {
   );
 }
 
-Object.assign(window, { Nav, Hero, TechStatement, TheTouch, TextureDivider, ProductTypes, Sustainability, Footer });
+Object.assign(window, { Nav, Hero, TechStatement, TheTouch, ProductTypes, Sustainability, Footer });

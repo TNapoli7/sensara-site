@@ -254,31 +254,6 @@ function SuedeTile({ label, variant = 'dark', className = '', children }) {
   );
 }
 
-/* ————————————————— Azure hotspot dot ————————————————— */
-function Hotspot({ x, y, label, active, onHover, onLeave }) {
-  return (
-    <button
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      onFocus={onHover}
-      onBlur={onLeave}
-      className="absolute -translate-x-1/2 -translate-y-1/2 group"
-      style={{ left: `${x}%`, top: `${y}%` }}
-      aria-label={label}
-    >
-      <span className="relative block">
-        <span className="absolute inset-0 rounded-full pulse-dot" style={{background:'var(--azure)', width:'12px', height:'12px'}} />
-        <span className="block w-3 h-3 rounded-full bg-azure" style={{boxShadow:'0 0 0 2px rgba(255,255,255,.15)'}} />
-      </span>
-      {active && (
-        <span className="absolute left-5 top-1/2 -translate-y-1/2 whitespace-nowrap mono text-[10px] tracking-[0.2em] uppercase px-2 py-1 bg-white text-black">
-          {label}
-        </span>
-      )}
-    </button>
-  );
-}
-
 /* ————————————————— Interior Hotspots — real image based ————————————————— */
 const HOTSPOT_DATA = [
   {
@@ -664,4 +639,4 @@ function SectionEntry({ children, className = '' }) {
   return <div ref={ref} className={className} style={{transformOrigin:'top center'}}>{children}</div>;
 }
 
-Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, RevealLines, StaggerReveal, Parallax, ParallaxImage, SectionEntry, SuedeScrollTexture, SuedeTile, Hotspot, InteriorHotspots, HOTSPOT_DATA });
+Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, RevealLines, StaggerReveal, Parallax, ParallaxImage, SectionEntry, SuedeScrollTexture, SuedeTile, InteriorHotspots, HOTSPOT_DATA });

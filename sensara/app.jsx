@@ -1,10 +1,12 @@
 /* Sensara App — root */
 
 function App() {
-  // Initialize GSAP + Lenis on mount
+  // Initialize GSAP + Lenis on mount, then hide loader
   useEffect(() => {
     initGSAP();
     initLenis();
+    // Hide loading screen once app is mounted
+    if (window._hideLoader) window._hideLoader();
   }, []);
 
   // Smooth anchor scroll via Lenis

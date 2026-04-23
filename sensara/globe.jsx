@@ -309,8 +309,17 @@ function GlobeSection() {
 
     let t0 = performance.now();
     let running = true;
+    let visible = false;
+
+    // Pause render loop when off-screen
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && running) requestAnimationFrame(tick);
+    }, { threshold: 0.05 });
+    io.observe(canvasRef.current);
+
     function tick() {
-      if (!running) return;
+      if (!running || !visible) return;
       const t = (performance.now() - t0) / 1000;
       const p = stateRef.current.rot;
 
@@ -344,6 +353,7 @@ function GlobeSection() {
 
     return () => {
       running = false;
+      io.disconnect();
       ro.disconnect();
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
