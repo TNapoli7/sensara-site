@@ -330,21 +330,48 @@ const HOTSPOT_DATA = [
 
 function InteriorHotspots({ active, setActive }) {
   const containerRef = useRef(null);
-  const detailRef = useRef(null);
+  const panelRef = useRef(null);
+  const contentRef = useRef(null);
+  const prevActive = useRef(null);
   const activeSpot = HOTSPOT_DATA.find(s => s.id === active);
 
-  // Animate detail panel
+  // Animate slide panel with GSAP
   useEffect(() => {
-    const el = detailRef.current;
-    if (!el || !window.gsap) return;
+    const panel = panelRef.current;
+    const content = contentRef.current;
+    if (!panel || !window.gsap) return;
     const gsap = window.gsap;
-    if (activeSpot) {
-      gsap.killTweensOf(el);
-      gsap.fromTo(el,
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+
+    if (activeSpot && prevActive.current !== active) {
+      // Kill any running animations
+      gsap.killTweensOf(panel);
+      gsap.killTweensOf(content?.children || []);
+
+      // Slide panel in from right
+      const tl = gsap.timeline();
+      tl.fromTo(panel,
+        { xPercent: 100, opacity: 0 },
+        { xPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
       );
+
+      // Stagger content elements
+      if (content?.children) {
+        tl.fromTo(content.children,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out' },
+          '-=0.3'
+        );
+      }
     }
+
+    if (!activeSpot && prevActive.current) {
+      // Slide out
+      gsap.to(panel, {
+        xPercent: 105, opacity: 0, duration: 0.4, ease: 'power2.in',
+      });
+    }
+
+    prevActive.current = active;
   }, [active]);
 
   return (
@@ -355,15 +382,15 @@ function InteriorHotspots({ active, setActive }) {
           src="sensara/images/interior-hero.jpg"
           alt="Premium car interior with Sensara materials"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{filter: active ? 'brightness(0.75)' : 'brightness(1)', transition:'filter 0.5s ease'}}
+          style={{
+            filter: active ? 'brightness(0.6)' : 'brightness(1)',
+            transform: active ? 'scale(1.03)' : 'scale(1)',
+            transition:'filter 0.6s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1)',
+          }}
         />
-        {/* Soft edge vignette only */}
+        {/* Soft edge vignette */}
         <div className="absolute inset-0 pointer-events-none" style={{
           background:'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)'
-        }}/>
-        {/* Bottom gradient — only where detail panel sits */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/4 pointer-events-none" style={{
-          background:'linear-gradient(to top, rgba(0,0,0,0.55), transparent)'
         }}/>
 
         {/* Hotspot dots */}
@@ -371,13 +398,12 @@ function InteriorHotspots({ active, setActive }) {
           <button
             key={spot.id}
             onClick={() => setActive(active === spot.id ? null : spot.id)}
-            onMouseEnter={() => setActive(spot.id)}
+            onMouseEnter={() => !active && setActive(spot.id)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
             style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center' }}
             aria-label={spot.label}
           >
             <span className="relative block">
-              {/* Pulse ring */}
               <span className="absolute inset-0 rounded-full"
                 style={{
                   width: active === spot.id ? '28px' : '20px',
@@ -386,10 +412,9 @@ function InteriorHotspots({ active, setActive }) {
                   background: 'rgba(38,109,241,0.25)',
                   border: '1px solid rgba(38,109,241,0.5)',
                   borderRadius: '50%',
-                  animation: 'pulseDot 2s infinite',
+                  animation: active === spot.id ? 'none' : 'pulseDot 2s infinite',
                   transition: 'all 0.3s ease',
                 }}/>
-              {/* Center dot */}
               <span className="block rounded-full bg-azure"
                 style={{
                   width: active === spot.id ? '14px' : '10px',
@@ -398,53 +423,105 @@ function InteriorHotspots({ active, setActive }) {
                   transition: 'all 0.3s ease',
                 }}/>
             </span>
-            {/* Floating label on hover */}
-            <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none"
-              style={{
-                opacity: active === spot.id ? 1 : 0,
-                transform: active === spot.id ? 'translateX(0) translateY(-50%)' : 'translateX(-8px) translateY(-50%)',
-                transition: 'all 0.3s ease',
-              }}>
-              <span className="mono text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 bg-azure text-white inline-block"
-                style={{boxShadow:'0 4px 20px rgba(38,109,241,0.35)'}}>
-                {spot.label}
+            {/* Floating label on hover — hidden when panel is open */}
+            {!active && (
+              <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                <span className="mono text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 bg-azure text-white inline-block"
+                  style={{boxShadow:'0 4px 20px rgba(38,109,241,0.35)'}}>
+                  {spot.label}
+                </span>
               </span>
-            </span>
+            )}
           </button>
         ))}
 
-        {/* Detail panel — appears over image when a spot is active */}
-        {activeSpot && (
-          <div ref={detailRef}
-            className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-auto md:w-[420px] z-20"
-            style={{pointerEvents:'auto'}}>
-            <div className="backdrop-blur-xl overflow-hidden" style={{
-              background:'rgba(18,18,18,0.85)',
-              border:'1px solid rgba(255,255,255,0.1)',
-              borderRadius:'12px',
-              boxShadow:'0 20px 60px rgba(0,0,0,0.5)',
-            }}>
-              {/* Detail image */}
-              <div className="relative w-full" style={{aspectRatio:'16/10'}}>
+        {/* Slide-in detail panel — right side */}
+        <div ref={panelRef}
+          className="absolute top-0 right-0 bottom-0 z-20 w-full md:w-[45%]"
+          style={{
+            transform: 'translateX(105%)',
+            opacity: 0,
+            pointerEvents: activeSpot ? 'auto' : 'none',
+          }}
+        >
+          {activeSpot && (
+            <div className="relative w-full h-full flex flex-col">
+              {/* Full-height product image */}
+              <div className="absolute inset-0 overflow-hidden">
                 <img src={activeSpot.image} alt={activeSpot.label} loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"/>
-                <div className="absolute bottom-0 left-0 right-0 h-1/2" style={{
-                  background:'linear-gradient(to top, rgba(18,18,18,0.95), transparent)'
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{transform:'scale(1.05)'}}/>
+                {/* Gradient overlays for text readability */}
+                <div className="absolute inset-0" style={{
+                  background:'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.5) 100%)'
                 }}/>
-                <div className="absolute bottom-3 left-4">
-                  <span className="mono text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 bg-azure/90 text-white">
+                <div className="absolute inset-0" style={{
+                  background:'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.8) 100%)'
+                }}/>
+              </div>
+
+              {/* Left edge line accent */}
+              <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-azure z-10"/>
+
+              {/* Close button */}
+              <button
+                onClick={() => setActive(null)}
+                className="absolute top-5 right-5 z-30 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-azure hover:bg-azure/10 transition-all duration-300"
+                style={{backdropFilter:'blur(8px)', background:'rgba(0,0,0,0.3)'}}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="1.5">
+                  <path d="M1 1l12 12M13 1L1 13"/>
+                </svg>
+              </button>
+
+              {/* Content — staggered reveal */}
+              <div ref={contentRef} className="relative z-20 flex flex-col justify-end h-full p-8 md:p-10">
+                {/* Product badge */}
+                <div>
+                  <span className="mono text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 bg-azure text-white inline-block mb-6">
                     {activeSpot.product}
                   </span>
                 </div>
-              </div>
-              {/* Info */}
-              <div className="px-5 py-4">
-                <h4 className="font-display text-lg tracking-tight text-white mb-1">{activeSpot.label}</h4>
-                <p className="mono text-[10px] tracking-[0.15em] text-azure mb-3">{activeSpot.spec}</p>
-                <p className="text-sm text-white/65 leading-relaxed">{activeSpot.detail}</p>
+
+                {/* Title */}
+                <div>
+                  <h3 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-[-0.04em] text-white leading-[0.95] mb-4">
+                    {activeSpot.label}
+                  </h3>
+                </div>
+
+                {/* Spec line */}
+                <div>
+                  <p className="mono text-[11px] tracking-[0.15em] text-azure mb-5">{activeSpot.spec}</p>
+                </div>
+
+                {/* Divider */}
+                <div>
+                  <div className="w-16 h-px bg-white/20 mb-5"/>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <p className="text-base text-white/75 leading-relaxed max-w-sm" style={{textWrap:'pretty'}}>
+                    {activeSpot.detail}
+                  </p>
+                </div>
+
+                {/* CTA */}
+                <div>
+                  <a href="#contact" className="inline-flex items-center gap-3 mt-8 mono text-[11px] tracking-[0.2em] uppercase text-white hover:text-azure transition-colors group/cta">
+                    <span>Request Sample</span>
+                    <span className="inline-block transition-transform duration-300 group-hover/cta:translate-x-1">→</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Click-away overlay when panel is open */}
+        {active && (
+          <div className="absolute inset-0 z-[15] cursor-pointer" onClick={() => setActive(null)}/>
         )}
       </div>
 
