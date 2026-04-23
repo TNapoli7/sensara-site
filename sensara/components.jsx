@@ -378,7 +378,7 @@ function InteriorHotspots({ active, setActive }) {
       <div
         ref={containerRef}
         className="relative w-full"
-        style={{aspectRatio:'16/9', cursor: cursorVisible ? 'none' : 'auto'}}
+        style={{aspectRatio:'16/9', cursor: (cursorVisible && !isOpen) ? 'none' : 'auto'}}
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -468,6 +468,7 @@ function InteriorHotspots({ active, setActive }) {
             opacity: isOpen ? 1 : 0,
             transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
             pointerEvents: isOpen ? 'auto' : 'none',
+            cursor: 'default',
           }}
         >
           <div className="relative w-full h-full flex flex-col overflow-hidden" style={{
@@ -475,11 +476,11 @@ function InteriorHotspots({ active, setActive }) {
             backdropFilter:'blur(20px)',
             borderLeft:'1px solid rgba(255,255,255,0.08)',
           }}>
-            {/* Close button — top right */}
+            {/* Close button — top left */}
             <button
               onClick={() => setActive(null)}
-              className="absolute top-4 right-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors"
-              style={{background:'rgba(255,255,255,0.05)'}}
+              className="absolute top-4 left-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors"
+              style={{background:'rgba(255,255,255,0.05)', cursor:'pointer'}}
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
                 <path d="M1 1l10 10M11 1L1 11"/>

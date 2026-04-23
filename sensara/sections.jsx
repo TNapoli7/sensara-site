@@ -264,8 +264,8 @@ function TechStatement() {
           </div>
           <InteriorHotspots active={hover} setActive={setHover}/>
           {/* Zone list below image */}
-          <div className="mt-8">
-            <StaggerReveal className="grid grid-cols-2 md:grid-cols-5 gap-px" stagger={0.06}>
+          <div className="mt-4">
+            <StaggerReveal className="grid grid-cols-2 md:grid-cols-5 gap-px" stagger={0.03}>
               {HOTSPOT_DATA.map(spot => (
                 <button key={spot.id}
                   onClick={() => setHover(hover === spot.id ? null : spot.id)}
