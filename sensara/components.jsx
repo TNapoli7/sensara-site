@@ -361,16 +361,8 @@ function InteriorHotspots({ active, setActive }) {
   const cursorText = hoveredSpot ? hoveredSpot : 'Explore';
   const cursorSize = hoveredSpot ? 90 : 70;
 
-  // Panel styles - JS-driven, no Tailwind breakpoint issues
-  const panelStyle = isMobile ? {
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    zIndex: 9999,
-    transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-    opacity: isOpen ? 1 : 0,
-    transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease',
-    pointerEvents: isOpen ? 'auto' : 'none',
-  } : {
+  // Desktop panel style (inside image container - absolute positioning works fine)
+  const desktopPanelStyle = {
     position: 'absolute',
     top: 0, right: 0, bottom: 0,
     width: '42%',
@@ -381,13 +373,30 @@ function InteriorHotspots({ active, setActive }) {
     pointerEvents: isOpen ? 'auto' : 'none',
   };
 
+  // Mobile overlay - rendered via Portal to document.body to escape GSAP transform ancestors
+  // (GSAP sets transform:matrix() on parent divs which breaks position:fixed)
+  const mobileOverlay = isMobile ? ReactDOM.createPortal(
+    React.createElement('div', {
+      style: {
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
+        zIndex: 9999,
+        transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+        opacity: isOpen ? 1 : 0,
+        transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease',
+        pointerEvents: isOpen ? 'auto' : 'none',
+      },
+    }, React.createElement(HotspotPanel, { activeSpot, isOpen, onClose: () => setActive(null) })),
+    document.body
+  ) : null;
+
   return (
-    <div className="relative w-full" style={{borderRadius:'16px', overflow: isMobile ? 'visible' : 'hidden'}}>
+    <div className="relative w-full overflow-hidden" style={{borderRadius:'16px'}}>
       {/* Hero interior image */}
       <div
         ref={containerRef}
         className="relative w-full"
-        style={{aspectRatio:'16/9', cursor: (cursorVisible && !isOpen) ? 'none' : 'auto', borderRadius:'16px', overflow:'hidden'}}
+        style={{aspectRatio:'16/9', cursor: (cursorVisible && !isOpen) ? 'none' : 'auto'}}
         onMouseMove={!isMobile ? handleMouseMove : undefined}
         onMouseEnter={!isMobile ? handleMouseEnter : undefined}
         onMouseLeave={!isMobile ? handleMouseLeave : undefined}
@@ -437,13 +446,13 @@ function InteriorHotspots({ active, setActive }) {
           background:'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)'
         }}/>
 
-        {/* Hotspot dots - desktop only (mobile uses zone list below) */}
-        {!isMobile && HOTSPOT_DATA.map(spot => (
+        {/* Hotspot dots */}
+        {HOTSPOT_DATA.map(spot => (
           <button
             key={spot.id}
             onClick={() => setActive(active === spot.id ? null : spot.id)}
-            onMouseEnter={() => setHoveredSpot(spot.label)}
-            onMouseLeave={() => setHoveredSpot(null)}
+            onMouseEnter={() => !isMobile && setHoveredSpot(spot.label)}
+            onMouseLeave={() => !isMobile && setHoveredSpot(null)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
             style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center', cursor: cursorVisible ? 'none' : 'pointer' }}
             aria-label={spot.label}
@@ -473,20 +482,16 @@ function InteriorHotspots({ active, setActive }) {
           </button>
         ))}
 
-        {/* Desktop panel - inside image container */}
+        {/* Desktop panel - inside image container (absolute positioning works here) */}
         {!isMobile && (
-          <div style={panelStyle}>
+          <div style={desktopPanelStyle}>
             <HotspotPanel activeSpot={activeSpot} isOpen={isOpen} onClose={() => setActive(null)} />
           </div>
         )}
       </div>
 
-      {/* Mobile panel - rendered outside the image container, uses fixed positioning via portal-like approach */}
-      {isMobile && (
-        <div style={panelStyle}>
-          <HotspotPanel activeSpot={activeSpot} isOpen={isOpen} onClose={() => setActive(null)} />
-        </div>
-      )}
+      {/* Mobile panel - portaled to document.body to escape GSAP transform ancestors */}
+      {mobileOverlay}
     </div>
   );
 }
