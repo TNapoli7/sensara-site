@@ -437,26 +437,27 @@ function InteriorHotspots({ active, setActive }) {
           </button>
         ))}
 
-        {/* Slide-in panel — pure CSS transition, right side */}
+        {/* Slide-in panel — desktop: inside image, mobile: fixed fullscreen */}
         <div
-          className="absolute top-0 right-0 bottom-0 z-20 w-[85%] md:w-[42%]"
+          className="md:absolute md:top-0 md:right-0 md:bottom-0 md:w-[42%] fixed inset-0 z-20 md:z-20"
           style={{
             transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
             opacity: isOpen ? 1 : 0,
             transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
             pointerEvents: isOpen ? 'auto' : 'none',
             cursor: 'default',
+            zIndex: isOpen ? 50 : -1,
           }}
         >
           <div className="relative w-full h-full flex flex-col overflow-hidden" style={{
-            background:'rgba(12,12,12,0.95)',
+            background:'rgba(12,12,12,0.97)',
             backdropFilter:'blur(20px)',
             borderLeft:'1px solid rgba(255,255,255,0.08)',
           }}>
             {/* Close button — top left */}
             <button
               onClick={() => setActive(null)}
-              className="close-btn absolute top-4 left-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20"
+              className="close-btn absolute top-4 left-4 z-30 w-10 h-10 md:w-9 md:h-9 flex items-center justify-center border border-white/20"
               style={{background:'rgba(255,255,255,0.05)', cursor:'pointer'}}
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
@@ -464,8 +465,8 @@ function InteriorHotspots({ active, setActive }) {
               </svg>
             </button>
 
-            {/* Image — top half */}
-            <div className="relative w-full flex-shrink-0" style={{height:'50%'}}>
+            {/* Image — top portion */}
+            <div className="relative w-full flex-shrink-0" style={{height:'45%'}}>
               {activeSpot && (
                 <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
@@ -475,13 +476,13 @@ function InteriorHotspots({ active, setActive }) {
                   }}/>
               )}
               <div className="absolute bottom-0 left-0 right-0 h-24" style={{
-                background:'linear-gradient(to top, rgba(12,12,12,0.95), transparent)'
+                background:'linear-gradient(to top, rgba(12,12,12,0.97), transparent)'
               }}/>
               {/* Azure accent line at bottom of image */}
               <div className="absolute bottom-0 left-0 w-12 h-[2px] bg-azure"/>
             </div>
 
-            {/* Content — bottom half */}
+            {/* Content — bottom portion */}
             {activeSpot && (
               <div className="flex-1 px-6 md:px-8 py-5 md:py-6 flex flex-col justify-between overflow-y-auto"
                 style={{
