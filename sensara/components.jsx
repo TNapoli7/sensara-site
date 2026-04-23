@@ -311,13 +311,29 @@ function InteriorHotspots({ active, setActive }) {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [cursorVisible, setCursorVisible] = useState(false);
   const [hoveredSpot, setHoveredSpot] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const rafRef = useRef(null);
   const targetRef = useRef({ x: 0, y: 0 });
   const currentRef = useRef({ x: 0, y: 0 });
 
-  // Smooth cursor follow with lerp
+  // Detect mobile
   useEffect(() => {
-    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    const check = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Lock body scroll on mobile when panel is open
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [isMobile, isOpen]);
+
+  // Smooth cursor follow with lerp (desktop only)
+  useEffect(() => {
     if (isMobile) return;
 
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -329,7 +345,7 @@ function InteriorHotspots({ active, setActive }) {
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, []);
+  }, [isMobile]);
 
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -338,62 +354,82 @@ function InteriorHotspots({ active, setActive }) {
   }, []);
 
   const handleMouseEnter = useCallback(() => {
-    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
     if (!isMobile) setCursorVisible(true);
-  }, []);
+  }, [isMobile]);
   const handleMouseLeave = useCallback(() => { setCursorVisible(false); setHoveredSpot(null); }, []);
 
-  // Cursor text — show spot label on hover, "Explore" otherwise
   const cursorText = hoveredSpot ? hoveredSpot : 'Explore';
   const cursorSize = hoveredSpot ? 90 : 70;
 
+  // Panel styles - JS-driven, no Tailwind breakpoint issues
+  const panelStyle = isMobile ? {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: 9999,
+    transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+    opacity: isOpen ? 1 : 0,
+    transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease',
+    pointerEvents: isOpen ? 'auto' : 'none',
+  } : {
+    position: 'absolute',
+    top: 0, right: 0, bottom: 0,
+    width: '42%',
+    zIndex: 20,
+    transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+    opacity: isOpen ? 1 : 0,
+    transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
+    pointerEvents: isOpen ? 'auto' : 'none',
+  };
+
   return (
-    <div className="relative w-full overflow-hidden" style={{borderRadius:'16px'}}>
+    <div className="relative w-full" style={{borderRadius:'16px', overflow: isMobile ? 'visible' : 'hidden'}}>
       {/* Hero interior image */}
       <div
         ref={containerRef}
         className="relative w-full"
-        style={{aspectRatio:'16/9', cursor: (cursorVisible && !isOpen) ? 'none' : 'auto'}}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        style={{aspectRatio:'16/9', cursor: (cursorVisible && !isOpen) ? 'none' : 'auto', borderRadius:'16px', overflow:'hidden'}}
+        onMouseMove={!isMobile ? handleMouseMove : undefined}
+        onMouseEnter={!isMobile ? handleMouseEnter : undefined}
+        onMouseLeave={!isMobile ? handleMouseLeave : undefined}
       >
-        {/* Custom cursor */}
-        <div
-          ref={cursorRef}
-          className="absolute pointer-events-none z-30"
-          style={{
-            left: cursorPos.x,
-            top: cursorPos.y,
-            width: cursorSize + 'px',
-            height: cursorSize + 'px',
-            marginLeft: -(cursorSize / 2) + 'px',
-            marginTop: -(cursorSize / 2) + 'px',
-            borderRadius: '50%',
-            border: '1px solid rgba(38,109,241,0.6)',
-            background: 'rgba(38,109,241,0.08)',
-            backdropFilter: 'blur(2px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: cursorVisible && !isOpen ? 1 : 0,
-            transform: cursorVisible && !isOpen ? 'scale(1)' : 'scale(0.5)',
-            transition: 'opacity 0.3s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1), width 0.3s ease, height 0.3s ease, margin 0.3s ease',
-            mixBlendMode: 'normal',
-          }}
-        >
-          <span className="mono text-[9px] tracking-[0.2em] uppercase text-azure/90 select-none text-center leading-tight" style={{maxWidth:'60px'}}>
-            {cursorText}
-          </span>
-        </div>
+        {/* Custom cursor - desktop only */}
+        {!isMobile && (
+          <div
+            ref={cursorRef}
+            className="absolute pointer-events-none z-30"
+            style={{
+              left: cursorPos.x,
+              top: cursorPos.y,
+              width: cursorSize + 'px',
+              height: cursorSize + 'px',
+              marginLeft: -(cursorSize / 2) + 'px',
+              marginTop: -(cursorSize / 2) + 'px',
+              borderRadius: '50%',
+              border: '1px solid rgba(38,109,241,0.6)',
+              background: 'rgba(38,109,241,0.08)',
+              backdropFilter: 'blur(2px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: cursorVisible && !isOpen ? 1 : 0,
+              transform: cursorVisible && !isOpen ? 'scale(1)' : 'scale(0.5)',
+              transition: 'opacity 0.3s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1), width 0.3s ease, height 0.3s ease, margin 0.3s ease',
+              mixBlendMode: 'normal',
+            }}
+          >
+            <span className="mono text-[9px] tracking-[0.2em] uppercase text-azure/90 select-none text-center leading-tight" style={{maxWidth:'60px'}}>
+              {cursorText}
+            </span>
+          </div>
+        )}
 
         <img
           src="sensara/images/interior-hero.jpg"
           alt="Premium car interior with Sensara materials"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
-            filter: isOpen ? 'brightness(0.65)' : 'brightness(1)',
-            transform: isOpen ? 'scale(1.02)' : 'scale(1)',
+            filter: isOpen && !isMobile ? 'brightness(0.65)' : 'brightness(1)',
+            transform: isOpen && !isMobile ? 'scale(1.02)' : 'scale(1)',
             transition:'filter 0.5s ease, transform 0.7s ease',
           }}
         />
@@ -401,8 +437,8 @@ function InteriorHotspots({ active, setActive }) {
           background:'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)'
         }}/>
 
-        {/* Hotspot dots */}
-        {HOTSPOT_DATA.map(spot => (
+        {/* Hotspot dots - desktop only (mobile uses zone list below) */}
+        {!isMobile && HOTSPOT_DATA.map(spot => (
           <button
             key={spot.id}
             onClick={() => setActive(active === spot.id ? null : spot.id)}
@@ -437,92 +473,93 @@ function InteriorHotspots({ active, setActive }) {
           </button>
         ))}
 
-        {/* Slide-in panel — desktop: inside image, mobile: fixed fullscreen */}
-        <div
-          className="md:absolute md:top-0 md:right-0 md:bottom-0 md:w-[42%] fixed inset-0 z-20 md:z-20"
-          style={{
-            transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-            opacity: isOpen ? 1 : 0,
-            transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
-            pointerEvents: isOpen ? 'auto' : 'none',
-            cursor: 'default',
-            zIndex: isOpen ? 50 : -1,
-          }}
-        >
-          <div className="relative w-full h-full flex flex-col overflow-hidden" style={{
-            background:'rgba(12,12,12,0.97)',
-            backdropFilter:'blur(20px)',
-            borderLeft:'1px solid rgba(255,255,255,0.08)',
-          }}>
-            {/* Close button — top left */}
-            <button
-              onClick={() => setActive(null)}
-              className="close-btn absolute top-4 left-4 z-30 w-10 h-10 md:w-9 md:h-9 flex items-center justify-center border border-white/20"
-              style={{background:'rgba(255,255,255,0.05)', cursor:'pointer'}}
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M1 1l10 10M11 1L1 11"/>
-              </svg>
-            </button>
-
-            {/* Image — top portion */}
-            <div className="relative w-full flex-shrink-0" style={{height:'45%'}}>
-              {activeSpot && (
-                <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{
-                    opacity: isOpen ? 1 : 0,
-                    transition: 'opacity 0.4s ease 0.15s',
-                  }}/>
-              )}
-              <div className="absolute bottom-0 left-0 right-0 h-24" style={{
-                background:'linear-gradient(to top, rgba(12,12,12,0.97), transparent)'
-              }}/>
-              {/* Azure accent line at bottom of image */}
-              <div className="absolute bottom-0 left-0 w-12 h-[2px] bg-azure"/>
-            </div>
-
-            {/* Content — bottom portion */}
-            {activeSpot && (
-              <div className="flex-1 px-6 md:px-8 py-5 md:py-6 flex flex-col justify-between overflow-y-auto"
-                style={{
-                  opacity: isOpen ? 1 : 0,
-                  transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
-                  transition: 'opacity 0.4s ease 0.2s, transform 0.5s ease 0.2s',
-                }}>
-                <div>
-                  {/* Product badge */}
-                  <span className="mono text-[10px] tracking-[0.25em] uppercase px-2.5 py-1 bg-azure text-white inline-block mb-4">
-                    {activeSpot.product}
-                  </span>
-
-                  {/* Title */}
-                  <h3 className="font-display text-2xl md:text-3xl tracking-[-0.03em] text-white leading-[1] mb-3">
-                    {activeSpot.label}
-                  </h3>
-
-                  {/* Specs */}
-                  <p className="mono text-[10px] tracking-[0.15em] text-azure/90 mb-4">{activeSpot.spec}</p>
-
-                  {/* Divider */}
-                  <div className="w-10 h-px bg-white/15 mb-4"/>
-
-                  {/* Description */}
-                  <p className="text-sm text-white/70 leading-relaxed" style={{textWrap:'pretty'}}>
-                    {activeSpot.detail}
-                  </p>
-                </div>
-
-                {/* CTA */}
-                <a href="#contact" className="inline-flex items-center gap-2 mt-5 mono text-[10px] tracking-[0.2em] uppercase text-white/80 hover:text-azure transition-colors">
-                  <span>Request Sample</span>
-                  <span>→</span>
-                </a>
-              </div>
-            )}
+        {/* Desktop panel - inside image container */}
+        {!isMobile && (
+          <div style={panelStyle}>
+            <HotspotPanel activeSpot={activeSpot} isOpen={isOpen} onClose={() => setActive(null)} />
           </div>
-        </div>
+        )}
       </div>
+
+      {/* Mobile panel - rendered outside the image container, uses fixed positioning via portal-like approach */}
+      {isMobile && (
+        <div style={panelStyle}>
+          <HotspotPanel activeSpot={activeSpot} isOpen={isOpen} onClose={() => setActive(null)} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ————————————————— Hotspot Detail Panel (shared between mobile & desktop) ————————————————— */
+function HotspotPanel({ activeSpot, isOpen, onClose }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="relative w-full h-full flex flex-col overflow-hidden" style={{
+      background:'rgba(12,12,12,0.97)',
+      backdropFilter:'blur(20px)',
+      borderLeft:'1px solid rgba(255,255,255,0.08)',
+    }}>
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="close-btn absolute top-5 left-5 z-30 w-11 h-11 flex items-center justify-center border border-white/20 rounded-sm"
+        style={{background:'rgba(255,255,255,0.06)', cursor:'pointer'}}
+      >
+        <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
+          <path d="M1 1l10 10M11 1L1 11"/>
+        </svg>
+      </button>
+
+      {/* Image */}
+      <div className="relative w-full flex-shrink-0" style={{height:'45%'}}>
+        {activeSpot && (
+          <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              opacity: isOpen ? 1 : 0,
+              transition: 'opacity 0.4s ease 0.15s',
+            }}/>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 h-24" style={{
+          background:'linear-gradient(to top, rgba(12,12,12,0.97), transparent)'
+        }}/>
+        <div className="absolute bottom-0 left-0 w-12 h-[2px] bg-azure"/>
+      </div>
+
+      {/* Content */}
+      {activeSpot && (
+        <div className="flex-1 px-6 py-6 flex flex-col justify-between overflow-y-auto"
+          style={{
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.4s ease 0.2s, transform 0.5s ease 0.2s',
+          }}>
+          <div>
+            <span className="mono text-[10px] tracking-[0.25em] uppercase px-2.5 py-1 bg-azure text-white inline-block mb-4">
+              {activeSpot.product}
+            </span>
+
+            <h3 className="font-display text-2xl tracking-[-0.03em] text-white leading-[1] mb-3">
+              {activeSpot.label}
+            </h3>
+
+            <p className="mono text-[10px] tracking-[0.15em] text-azure/90 mb-4">{activeSpot.spec}</p>
+
+            <div className="w-10 h-px bg-white/15 mb-4"/>
+
+            <p className="text-sm text-white/70 leading-relaxed" style={{textWrap:'pretty'}}>
+              {activeSpot.detail}
+            </p>
+          </div>
+
+          <a href="#contact" onClick={onClose} className="inline-flex items-center gap-2 mt-6 mono text-[10px] tracking-[0.2em] uppercase text-white/80 hover:text-azure transition-colors">
+            <span>Request Sample</span>
+            <span>→</span>
+          </a>
+        </div>
+      )}
     </div>
   );
 }
@@ -640,4 +677,4 @@ function SectionEntry({ children, className = '' }) {
   return <div ref={ref} className={className} style={{transformOrigin:'top center'}}>{children}</div>;
 }
 
-Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, RevealLines, StaggerReveal, Parallax, ParallaxImage, SectionEntry, SuedeScrollTexture, SuedeTile, InteriorHotspots, HOTSPOT_DATA });
+Object.assign(window, { initLenis, initGSAP, useSectionProgress, useScrollY, Eyebrow, Reveal, RevealLines, StaggerReveal, Parallax, ParallaxImage, SectionEntry, SuedeScrollTexture, SuedeTile, InteriorHotspots, HotspotPanel, HOTSPOT_DATA });
