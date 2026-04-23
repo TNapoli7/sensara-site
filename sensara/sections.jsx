@@ -592,9 +592,6 @@ function ProductTypes() {
 
   return (
     <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10 pt-10 pb-4">
-        <Reveal><Eyebrow>Product Range</Eyebrow></Reveal>
-      </div>
       {/* Full-bleed accordion — desktop */}
       <Reveal>
         <div className="relative w-full hidden md:flex h-[80vh] min-h-[640px] border-y border-white/5">
