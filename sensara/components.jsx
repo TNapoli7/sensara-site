@@ -329,60 +329,99 @@ const HOTSPOT_DATA = [
 ];
 
 function InteriorHotspots({ active, setActive }) {
-  const containerRef = useRef(null);
-  const panelRef = useRef(null);
-  const contentRef = useRef(null);
   const activeSpot = HOTSPOT_DATA.find(s => s.id === active);
+  const isOpen = !!activeSpot;
+  const containerRef = useRef(null);
+  const cursorRef = useRef(null);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [cursorVisible, setCursorVisible] = useState(false);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
+  const rafRef = useRef(null);
+  const targetRef = useRef({ x: 0, y: 0 });
+  const currentRef = useRef({ x: 0, y: 0 });
 
-  // Animate slide panel with GSAP
+  // Smooth cursor follow with lerp
   useEffect(() => {
-    const panel = panelRef.current;
-    if (!panel || !window.gsap) return;
-    const gsap = window.gsap;
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    if (isMobile) return;
 
-    if (active) {
-      // Kill running anims
-      gsap.killTweensOf(panel);
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const animate = () => {
+      currentRef.current.x = lerp(currentRef.current.x, targetRef.current.x, 0.15);
+      currentRef.current.y = lerp(currentRef.current.y, targetRef.current.y, 0.15);
+      setCursorPos({ x: currentRef.current.x, y: currentRef.current.y });
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []);
 
-      // Slide panel in from right
-      gsap.fromTo(panel,
-        { xPercent: 100 },
-        { xPercent: 0, duration: 0.6, ease: 'power3.out',
-          onComplete: () => {
-            // Stagger content after panel is visible
-            const content = contentRef.current;
-            if (content?.children?.length) {
-              gsap.fromTo(content.children,
-                { y: 30, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out' }
-              );
-            }
-          }
-        }
-      );
-    } else {
-      // Slide out
-      gsap.to(panel, {
-        xPercent: 105, duration: 0.4, ease: 'power2.in',
-      });
-    }
-  }, [active]);
+  const handleMouseMove = useCallback((e) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    targetRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    if (!isMobile) setCursorVisible(true);
+  }, []);
+  const handleMouseLeave = useCallback(() => { setCursorVisible(false); setHoveredSpot(null); }, []);
+
+  // Cursor text — show spot label on hover, "Explore" otherwise
+  const cursorText = hoveredSpot ? hoveredSpot : 'Explore';
+  const cursorSize = hoveredSpot ? 90 : 70;
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden" style={{borderRadius:'16px'}}>
+    <div className="relative w-full overflow-hidden" style={{borderRadius:'16px'}}>
       {/* Hero interior image */}
-      <div className="relative w-full" style={{aspectRatio:'16/9'}}>
+      <div
+        ref={containerRef}
+        className="relative w-full"
+        style={{aspectRatio:'16/9', cursor: cursorVisible ? 'none' : 'auto'}}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Custom cursor */}
+        <div
+          ref={cursorRef}
+          className="absolute pointer-events-none z-30"
+          style={{
+            left: cursorPos.x,
+            top: cursorPos.y,
+            width: cursorSize + 'px',
+            height: cursorSize + 'px',
+            marginLeft: -(cursorSize / 2) + 'px',
+            marginTop: -(cursorSize / 2) + 'px',
+            borderRadius: '50%',
+            border: '1px solid rgba(38,109,241,0.6)',
+            background: 'rgba(38,109,241,0.08)',
+            backdropFilter: 'blur(2px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: cursorVisible && !isOpen ? 1 : 0,
+            transform: cursorVisible && !isOpen ? 'scale(1)' : 'scale(0.5)',
+            transition: 'opacity 0.3s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1), width 0.3s ease, height 0.3s ease, margin 0.3s ease',
+            mixBlendMode: 'normal',
+          }}
+        >
+          <span className="mono text-[9px] tracking-[0.2em] uppercase text-azure/90 select-none text-center leading-tight" style={{maxWidth:'60px'}}>
+            {cursorText}
+          </span>
+        </div>
+
         <img
           src="sensara/images/interior-hero.jpg"
           alt="Premium car interior with Sensara materials"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
-            filter: active ? 'brightness(0.6)' : 'brightness(1)',
-            transform: active ? 'scale(1.03)' : 'scale(1)',
-            transition:'filter 0.6s ease, transform 0.8s cubic-bezier(0.2,0.7,0.2,1)',
+            filter: isOpen ? 'brightness(0.65)' : 'brightness(1)',
+            transform: isOpen ? 'scale(1.02)' : 'scale(1)',
+            transition:'filter 0.5s ease, transform 0.7s ease',
           }}
         />
-        {/* Soft edge vignette */}
         <div className="absolute inset-0 pointer-events-none" style={{
           background:'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)'
         }}/>
@@ -392,8 +431,10 @@ function InteriorHotspots({ active, setActive }) {
           <button
             key={spot.id}
             onClick={() => setActive(active === spot.id ? null : spot.id)}
+            onMouseEnter={() => setHoveredSpot(spot.label)}
+            onMouseLeave={() => setHoveredSpot(null)}
             className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
-            style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center' }}
+            style={{ left: `${spot.x}%`, top: `${spot.y}%`, minWidth:'44px', minHeight:'44px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'none' }}
             aria-label={spot.label}
           >
             <span className="relative block">
@@ -416,93 +457,93 @@ function InteriorHotspots({ active, setActive }) {
                   transition: 'all 0.3s ease',
                 }}/>
             </span>
-            {/* Floating label on hover — hidden when panel is open */}
-            {!active && (
-              <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                <span className="mono text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 bg-azure text-white inline-block"
-                  style={{boxShadow:'0 4px 20px rgba(38,109,241,0.35)'}}>
-                  {spot.label}
-                </span>
-              </span>
-            )}
           </button>
         ))}
 
-        {/* Slide-in detail panel — right side, always mounted */}
-        <div ref={panelRef}
-          className="absolute top-0 right-0 bottom-0 z-20 w-full md:w-[45%]"
+        {/* Slide-in panel — pure CSS transition, right side */}
+        <div
+          className="absolute top-0 right-0 bottom-0 z-20 w-[85%] md:w-[42%]"
           style={{
-            transform: 'translateX(105%)',
-            pointerEvents: activeSpot ? 'auto' : 'none',
+            transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+            opacity: isOpen ? 1 : 0,
+            transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
+            pointerEvents: isOpen ? 'auto' : 'none',
           }}
         >
-          <div className="relative w-full h-full flex flex-col">
-            {/* Full-height product image */}
-            <div className="absolute inset-0 overflow-hidden">
-              {activeSpot && (
-                <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{transform:'scale(1.05)'}}/>
-              )}
-              {/* Gradient overlays for text readability */}
-              <div className="absolute inset-0" style={{
-                background:'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.5) 100%)'
-              }}/>
-              <div className="absolute inset-0" style={{
-                background:'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.8) 100%)'
-              }}/>
-            </div>
-
-            {/* Left edge line accent */}
-            <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-azure z-10"/>
-
-            {/* Close button */}
+          <div className="relative w-full h-full flex flex-col overflow-hidden" style={{
+            background:'rgba(12,12,12,0.95)',
+            backdropFilter:'blur(20px)',
+            borderLeft:'1px solid rgba(255,255,255,0.08)',
+          }}>
+            {/* Close button — top right */}
             <button
-              onClick={(e) => { e.stopPropagation(); setActive(null); }}
-              className="absolute top-5 right-5 z-30 w-10 h-10 flex items-center justify-center border border-white/20 hover:border-azure hover:bg-azure/10 transition-all duration-300"
-              style={{backdropFilter:'blur(8px)', background:'rgba(0,0,0,0.3)'}}
+              onClick={() => setActive(null)}
+              className="absolute top-4 right-4 z-30 w-9 h-9 flex items-center justify-center border border-white/20 hover:border-white/50 transition-colors"
+              style={{background:'rgba(255,255,255,0.05)'}}
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="1.5">
-                <path d="M1 1l12 12M13 1L1 13"/>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M1 1l10 10M11 1L1 11"/>
               </svg>
             </button>
 
-            {/* Content — staggered reveal */}
+            {/* Image — top half */}
+            <div className="relative w-full flex-shrink-0" style={{height:'50%'}}>
+              {activeSpot && (
+                <img key={activeSpot.id} src={activeSpot.image} alt={activeSpot.label} loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{
+                    opacity: isOpen ? 1 : 0,
+                    transition: 'opacity 0.4s ease 0.15s',
+                  }}/>
+              )}
+              <div className="absolute bottom-0 left-0 right-0 h-24" style={{
+                background:'linear-gradient(to top, rgba(12,12,12,0.95), transparent)'
+              }}/>
+              {/* Azure accent line at bottom of image */}
+              <div className="absolute bottom-0 left-0 w-12 h-[2px] bg-azure"/>
+            </div>
+
+            {/* Content — bottom half */}
             {activeSpot && (
-              <div ref={contentRef} className="relative z-20 flex flex-col justify-end h-full p-8 md:p-10">
+              <div className="flex-1 px-6 md:px-8 py-5 md:py-6 flex flex-col justify-between overflow-y-auto"
+                style={{
+                  opacity: isOpen ? 1 : 0,
+                  transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.4s ease 0.2s, transform 0.5s ease 0.2s',
+                }}>
                 <div>
-                  <span className="mono text-[10px] tracking-[0.25em] uppercase px-3 py-1.5 bg-azure text-white inline-block mb-6">
+                  {/* Product badge */}
+                  <span className="mono text-[10px] tracking-[0.25em] uppercase px-2.5 py-1 bg-azure text-white inline-block mb-4">
                     {activeSpot.product}
                   </span>
-                </div>
-                <div>
-                  <h3 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-[-0.04em] text-white leading-[0.95] mb-4">
+
+                  {/* Title */}
+                  <h3 className="font-display text-2xl md:text-3xl tracking-[-0.03em] text-white leading-[1] mb-3">
                     {activeSpot.label}
                   </h3>
-                </div>
-                <div>
-                  <p className="mono text-[11px] tracking-[0.15em] text-azure mb-5">{activeSpot.spec}</p>
-                </div>
-                <div>
-                  <div className="w-16 h-px bg-white/20 mb-5"/>
-                </div>
-                <div>
-                  <p className="text-base text-white/75 leading-relaxed max-w-sm" style={{textWrap:'pretty'}}>
+
+                  {/* Specs */}
+                  <p className="mono text-[10px] tracking-[0.15em] text-azure/90 mb-4">{activeSpot.spec}</p>
+
+                  {/* Divider */}
+                  <div className="w-10 h-px bg-white/15 mb-4"/>
+
+                  {/* Description */}
+                  <p className="text-sm text-white/70 leading-relaxed" style={{textWrap:'pretty'}}>
                     {activeSpot.detail}
                   </p>
                 </div>
-                <div>
-                  <a href="#contact" className="inline-flex items-center gap-3 mt-8 mono text-[11px] tracking-[0.2em] uppercase text-white hover:text-azure transition-colors group/cta">
-                    <span>Request Sample</span>
-                    <span className="inline-block transition-transform duration-300 group-hover/cta:translate-x-1">→</span>
-                  </a>
-                </div>
+
+                {/* CTA */}
+                <a href="#contact" className="inline-flex items-center gap-2 mt-5 mono text-[10px] tracking-[0.2em] uppercase text-white/80 hover:text-azure transition-colors">
+                  <span>Request Sample</span>
+                  <span>→</span>
+                </a>
               </div>
             )}
           </div>
         </div>
       </div>
-
     </div>
   );
 }
