@@ -404,7 +404,7 @@ function GlobeSection() {
 
           {/* Text column */}
           <div className="md:col-span-5 order-2 relative">
-            <Reveal><Eyebrow className="mb-6">04 · Global Presence</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6">Global Presence</Eyebrow></Reveal>
             <div className="overflow-hidden mb-6">
               <Reveal clip>
                 <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.9]" style={{letterSpacing:'-0.04em'}}>

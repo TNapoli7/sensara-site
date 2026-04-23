@@ -200,7 +200,7 @@ function TechStatement() {
         {/* Header */}
         <div className="grid md:grid-cols-12 gap-10 items-end mb-20">
           <div className="md:col-span-5">
-            <Reveal><Eyebrow className="mb-6">01 · Technology</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6">Technology</Eyebrow></Reveal>
             <h2 className="sr-only">Engineered for the Senses</h2>
             <RevealLines stagger={0.14}>
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered</span></div>
@@ -376,7 +376,7 @@ function TheTouch() {
       {/* Center content — parallax for depth */}
       <Parallax speed={-0.06} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
         <Reveal>
-          <div className="eyebrow mb-6 text-white/50">02 · The Touch</div>
+          <div className="eyebrow mb-6 text-white/50">The Touch</div>
         </Reveal>
         <RevealLines stagger={0.14}>
           <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Designed to be</span></div>
@@ -593,7 +593,7 @@ function ProductTypes() {
   return (
     <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 pt-10 pb-4">
-        <Reveal><Eyebrow>03 · Product Range</Eyebrow></Reveal>
+        <Reveal><Eyebrow>Product Range</Eyebrow></Reveal>
       </div>
       {/* Full-bleed accordion — desktop */}
       <Reveal>
@@ -828,7 +828,7 @@ function Sustainability() {
 
           {/* Content col */}
           <div className="md:col-span-7">
-            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>05 · Sustainability</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>Sustainability</Eyebrow></Reveal>
             <RevealLines stagger={0.14} className="mb-8">
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered with</span></div>
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation" style={{color:'var(--success)'}}>Purpose.</span></div>
@@ -876,7 +876,7 @@ function Footer() {
       <div className="relative pt-32 pb-12">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
           <Reveal>
-            <Eyebrow className="mb-8">06 · Contact</Eyebrow>
+            <Eyebrow className="mb-8">Contact</Eyebrow>
           </Reveal>
           <div className="grid md:grid-cols-12 gap-10 mb-20">
             <div className="md:col-span-7">
