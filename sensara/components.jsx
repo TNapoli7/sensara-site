@@ -440,20 +440,22 @@ function InteriorHotspots({ active, setActive }) {
             <span className="relative block">
               <span className="absolute inset-0 rounded-full"
                 style={{
-                  width: active === spot.id ? '28px' : '20px',
-                  height: active === spot.id ? '28px' : '20px',
-                  margin: active === spot.id ? '-8px' : '-4px',
-                  background: 'rgba(38,109,241,0.25)',
+                  width: active === spot.id ? '36px' : hoveredSpot === spot.label ? '32px' : '20px',
+                  height: active === spot.id ? '36px' : hoveredSpot === spot.label ? '32px' : '20px',
+                  margin: active === spot.id ? '-12px' : hoveredSpot === spot.label ? '-10px' : '-4px',
+                  background: hoveredSpot === spot.label ? 'rgba(38,109,241,0.35)' : 'rgba(38,109,241,0.25)',
                   border: '1px solid rgba(38,109,241,0.5)',
                   borderRadius: '50%',
-                  animation: active === spot.id ? 'none' : 'pulseDot 2s infinite',
+                  animation: active === spot.id || hoveredSpot === spot.label ? 'none' : 'pulseDot 2s infinite',
                   transition: 'all 0.3s ease',
                 }}/>
               <span className="block rounded-full bg-azure"
                 style={{
-                  width: active === spot.id ? '14px' : '10px',
-                  height: active === spot.id ? '14px' : '10px',
-                  boxShadow:'0 0 12px rgba(38,109,241,0.6), 0 0 0 2px rgba(255,255,255,0.25)',
+                  width: active === spot.id ? '18px' : hoveredSpot === spot.label ? '16px' : '10px',
+                  height: active === spot.id ? '18px' : hoveredSpot === spot.label ? '16px' : '10px',
+                  boxShadow: hoveredSpot === spot.label
+                    ? '0 0 20px rgba(38,109,241,0.8), 0 0 0 3px rgba(255,255,255,0.35)'
+                    : '0 0 12px rgba(38,109,241,0.6), 0 0 0 2px rgba(255,255,255,0.25)',
                   transition: 'all 0.3s ease',
                 }}/>
             </span>

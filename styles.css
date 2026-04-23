@@ -64,7 +64,7 @@ body { font-family: 'Poppins', system-ui, sans-serif; font-weight: 300; -webkit-
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.marquee-track { animation: marquee 40s linear infinite; }
+.marquee-track { animation: marquee 28s linear infinite; }
 
 /* Chevron bounce */
 @keyframes chev {

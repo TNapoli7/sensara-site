@@ -224,7 +224,7 @@ function TechStatement() {
           <div className="md:col-span-6 md:col-start-7">
             <Reveal delay={150}>
               <p className="text-xl md:text-2xl font-light leading-[1.45] text-white/85 mb-6" style={{textWrap:'pretty'}}>
-                Sensara is a premium suede material engineered to elevate the sensory experience of automotive interior surfaces. Designed for performance, aesthetics, and sustainability — it delivers a refined touch while meeting the demanding technical requirements of modern vehicle interiors.
+                Sensara is a premium suede material engineered to elevate the sensory experience of automotive interior surfaces. Designed for performance, aesthetics, and sustainability - it delivers a refined touch while meeting the demanding technical requirements of modern vehicle interiors.
               </p>
             </Reveal>
             <Reveal delay={300}>
@@ -398,7 +398,7 @@ function TheTouch() {
         </RevealLines>
         <Reveal delay={200}>
           <p className="text-lg md:text-xl text-white/60 max-w-lg font-light mt-6" style={{textWrap:'pretty'}}>
-            Move your cursor across the surface. The way light shifts reveals the depth of every fiber — just like running your hand across real suede.
+            Move your cursor across the surface. The way light shifts reveals the depth of every fiber - just like running your hand across real suede.
           </p>
         </Reveal>
       </Parallax>
@@ -522,14 +522,14 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
       {/* Compressed state — rotated short name */}
       <div className="absolute inset-0 flex flex-col items-center justify-between py-8 pointer-events-none transition-opacity duration-300"
            style={{ opacity: isActive ? 0 : 1 }}>
-        <div className="mono text-[10px] tracking-[0.3em] uppercase text-white/60">{p.code}</div>
+        <div className="mono text-[11px] tracking-[0.3em] uppercase text-white/60">{p.code}</div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="font-display text-2xl md:text-3xl lg:text-4xl text-white whitespace-nowrap"
+          <div className="font-display text-3xl md:text-4xl lg:text-5xl text-white whitespace-nowrap"
                style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: '-0.02em' }}>
             {p.name.replace('Sensara ', '')}
           </div>
         </div>
-        <div className="w-8 h-8 flex items-center justify-center border border-white/30 text-white/60">+</div>
+        <div className="w-9 h-9 flex items-center justify-center border border-white/30 text-white/60 text-lg">+</div>
       </div>
 
       {/* Expanded state */}
@@ -541,51 +541,51 @@ function AccordionPanel({ p, idx, hovered, anyHovered, setHovered }) {
         </div>
 
         <div className="max-w-xl">
-          <h3 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-[-0.04em] text-white mb-3 leading-[0.95]">
+          <h3 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-[-0.04em] text-white mb-4 leading-[0.95]">
             {p.name}
           </h3>
-          <p className="text-base md:text-lg text-white/85 mb-6 font-light" style={{textWrap:'pretty'}}>{p.tag}</p>
+          <p className="text-lg md:text-xl text-white/85 mb-6 font-light" style={{textWrap:'pretty'}}>{p.tag}</p>
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-2 mb-6 pb-6 border-b border-white/15">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 mb-6 pb-6 border-b border-white/15">
             {p.specs.map((s,i)=>(
-              <div key={i} className="flex items-center gap-2 mono text-[11px] text-white/80">
-                <span className="w-1 h-1 bg-azure"></span>{s}
+              <div key={i} className="flex items-center gap-2 mono text-[12px] text-white/85">
+                <span className="w-1.5 h-1.5 bg-azure"></span>{s}
               </div>
             ))}
           </div>
 
           <div className="mb-5">
             <div className="eyebrow mb-2 text-white/60">Applications</div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {p.apps.map(a=>(
-                <span key={a} className="mono text-[10px] tracking-[0.1em] uppercase px-2 py-1 border border-white/25 text-white/90 bg-white/5">
+                <span key={a} className="mono text-[11px] tracking-[0.1em] uppercase px-3 py-1.5 border border-white/25 text-white/90 bg-white/5">
                   {a}
                 </span>
               ))}
             </div>
           </div>
 
-          <p className="text-base text-white/85 leading-relaxed mb-6" style={{textWrap:'pretty'}}>{p.selling}</p>
+          <p className="text-base md:text-lg text-white/85 leading-relaxed mb-6" style={{textWrap:'pretty'}}>{p.selling}</p>
         </div>
 
         <div className="flex items-end justify-between">
-          <a href="#contact" className="mono text-[11px] tracking-[0.25em] uppercase flex items-center gap-2 text-white hover:text-azure transition-colors pointer-events-auto">
+          <a href="#contact" className="mono text-[11px] tracking-[0.25em] uppercase inline-flex items-center gap-2 px-4 py-2.5 bg-azure text-white hover:bg-white hover:text-shark-950 transition-colors pointer-events-auto">
             <span>Request {p.name}</span>
             <span className="inline-block">→</span>
           </a>
           {/* Mini hotspot diagram */}
           <div className="flex flex-col items-end gap-1">
-            <span className="mono text-[10px] tracking-[0.15em] uppercase text-white/50 mb-1">Application zone</span>
-            <svg width="140" height="78" viewBox="0 0 140 78" className="text-white/60">
-              <path d="M8 60 L24 46 L48 44 L66 30 L94 29 L112 38 L128 50 L132 60" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-              <circle cx="34" cy="64" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-              <circle cx="108" cy="64" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-              <line x1="8" y1="68" x2="132" y2="68" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.4"/>
+            <span className="mono text-[11px] tracking-[0.15em] uppercase text-white/60 mb-1">Application zone</span>
+            <svg width="200" height="112" viewBox="0 0 200 112" className="text-white/60">
+              <path d="M12 86 L34 66 L68 63 L94 43 L134 42 L160 54 L184 72 L190 86" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="48" cy="92" r="10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <circle cx="154" cy="92" r="10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="12" y1="98" x2="190" y2="98" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.4"/>
               {/* Hotspot for this product */}
-              {p.code === '01' && <><circle cx="70" cy="25" r="5" fill="#266DF1" opacity="0.9"/><text x="70" y="16" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">HEADLINER</text></>}
-              {p.code === '02' && <><circle cx="106" cy="42" r="5" fill="#266DF1" opacity="0.9"/><text x="106" y="33" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">SEATS</text></>}
-              {p.code === '03' && <><circle cx="82" cy="34" r="5" fill="#266DF1" opacity="0.9"/><text x="82" y="25" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">MULTI</text></>}
-              {p.code === '04' && <><circle cx="70" cy="36" r="5" fill="#266DF1" opacity="0.9"/><text x="70" y="27" textAnchor="middle" fill="#266DF1" fontSize="9" fontFamily="monospace">PILLOW</text></>}
+              {p.code === '01' && <><circle cx="100" cy="36" r="6" fill="#266DF1" opacity="0.9"/><text x="100" y="24" textAnchor="middle" fill="#266DF1" fontSize="11" fontFamily="monospace" fontWeight="500">HEADLINER</text></>}
+              {p.code === '02' && <><circle cx="152" cy="60" r="6" fill="#266DF1" opacity="0.9"/><text x="152" y="48" textAnchor="middle" fill="#266DF1" fontSize="11" fontFamily="monospace" fontWeight="500">SEATS</text></>}
+              {p.code === '03' && <><circle cx="118" cy="48" r="6" fill="#266DF1" opacity="0.9"/><text x="118" y="36" textAnchor="middle" fill="#266DF1" fontSize="11" fontFamily="monospace" fontWeight="500">MULTI</text></>}
+              {p.code === '04' && <><circle cx="100" cy="52" r="6" fill="#266DF1" opacity="0.9"/><text x="100" y="40" textAnchor="middle" fill="#266DF1" fontSize="11" fontFamily="monospace" fontWeight="500">PILLOW</text></>}
             </svg>
           </div>
         </div>
@@ -670,11 +670,6 @@ function ProductTypes() {
         </div>
       </Reveal>
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10 py-8 flex items-center justify-between">
-        <div className="eyebrow">Hover to expand · 01–04</div>
-        <div className="eyebrow text-shark-400">Sensara Range · v1.0</div>
-      </div>
-
       {/* Brand marquee — integrated at bottom */}
       <div className="border-t border-white/6 pt-16 pb-12 md:pt-20 md:pb-16">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10 mb-10">
@@ -683,13 +678,13 @@ function ProductTypes() {
               <p className="font-display text-xl md:text-2xl tracking-tight text-white/80">Trusted by leading automotive brands.</p>
             </Reveal>
             <Reveal>
-              <div className="eyebrow text-shark-600">Global OEM partners · 2020—present</div>
+              <div className="eyebrow text-shark-600">Global OEM partners · 2020-present</div>
             </Reveal>
           </div>
         </div>
         <div className="relative overflow-hidden border-y border-white/6 py-8">
           <div className="flex gap-16 marquee-track whitespace-nowrap">
-            {['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG'].map((b,i)=>(
+            {['BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC','BYD','NIO','ZEEKR','GEELY','VOLKSWAGEN','XPENG','CHERY','DONGFENG','GAC','SAIC'].map((b,i)=>(
               <div key={i} className="flex items-center gap-4 shrink-0">
                 <span className="w-1.5 h-1.5 bg-shark-700 rounded-full"></span>
                 <span className="font-medium text-2xl md:text-3xl tracking-[-0.02em] text-shark-600 hover:text-azure transition-colors duration-300" style={{fontFamily:'Poppins, sans-serif'}}>
@@ -990,7 +985,7 @@ function Footer() {
                 <span className="absolute inset-0 border border-white/70"></span>
                 <span className="absolute inset-1 bg-white/70"></span>
               </span>
-              <span className="text-sm text-white/70">Sensara is a product of <a href="https://carlom.com" className="underline hover:text-azure">Carlom</a> — Innovating textiles since 1966.</span>
+              <span className="text-sm text-white/70">Sensara is a product of <a href="https://carlom.com" className="underline hover:text-azure">Carlom</a> - Innovating textiles since 1966.</span>
             </div>
             <div className="flex items-center gap-6 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
               <a href="#" className="hover:text-azure">Privacy</a>
