@@ -159,13 +159,13 @@ function Hero() {
                 <span className="h-px w-12 bg-white/50"></span>
               </div>
 
-              <div className="mt-10 hidden md:flex items-center gap-10 mono text-[10px] tracking-[0.25em] uppercase text-white/60">
-                <span>260–320 gsm</span>
-                <span className="w-1 h-1 bg-white/40"></span>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:gap-x-10 mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-white/60">
+                <span>260-320 gsm</span>
+                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
                 <span>Solvent Free</span>
-                <span className="w-1 h-1 bg-white/40"></span>
+                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
                 <span>Up to 70% Recycled</span>
-                <span className="w-1 h-1 bg-white/40"></span>
+                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
                 <span>Made in Portugal · China</span>
               </div>
             </div>
@@ -376,7 +376,7 @@ function TheTouch() {
       {/* Center content — parallax for depth */}
       <Parallax speed={-0.06} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
         <Reveal>
-          <div className="eyebrow mb-6 text-white/50">The Sensara Experience</div>
+          <div className="eyebrow mb-6 text-white/50">02 · The Touch</div>
         </Reveal>
         <RevealLines stagger={0.14}>
           <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Designed to be</span></div>
@@ -592,6 +592,9 @@ function ProductTypes() {
 
   return (
     <section id="product" className="section-overlap relative bg-shark-950 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:4}}>
+      <div className="max-w-[1600px] mx-auto px-6 md:px-10 pt-10 pb-4">
+        <Reveal><Eyebrow>03 · Product Range</Eyebrow></Reveal>
+      </div>
       {/* Full-bleed accordion — desktop */}
       <Reveal>
         <div className="relative w-full hidden md:flex h-[80vh] min-h-[640px] border-y border-white/5">
@@ -825,7 +828,7 @@ function Sustainability() {
 
           {/* Content col */}
           <div className="md:col-span-7">
-            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>03 · Sustainability</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>05 · Sustainability</Eyebrow></Reveal>
             <RevealLines stagger={0.14} className="mb-8">
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered with</span></div>
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation" style={{color:'var(--success)'}}>Purpose.</span></div>
@@ -873,7 +876,7 @@ function Footer() {
       <div className="relative pt-32 pb-12">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
           <Reveal>
-            <Eyebrow className="mb-8">04 · Contact</Eyebrow>
+            <Eyebrow className="mb-8">06 · Contact</Eyebrow>
           </Reveal>
           <div className="grid md:grid-cols-12 gap-10 mb-20">
             <div className="md:col-span-7">
@@ -890,7 +893,7 @@ function Footer() {
                   <a href="mailto:marketing@carlom.com" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
                     Request Samples
                   </a>
-                  <a href="#" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
+                  <a href="mailto:marketing@carlom.com?subject=Tech%20Sheet%20Request" className="mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 border border-white/20 hover:border-azure hover:text-azure transition-colors">
                     Download Tech Sheet
                   </a>
                 </div>
@@ -936,8 +939,8 @@ function Footer() {
               <span className="text-sm text-white/70">Sensara is a product of <a href="https://carlom.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-azure">Carlom</a> - Innovating textiles since 1966.</span>
             </div>
             <div className="flex items-center gap-6 mono text-[10px] tracking-[0.2em] uppercase text-white/50">
-              <a href="#" className="hover:text-azure">Privacy</a>
-              <a href="#" className="hover:text-azure">Legal</a>
+              <a href="mailto:marketing@carlom.com?subject=Privacy%20Policy" className="hover:text-azure">Privacy</a>
+              <a href="mailto:marketing@carlom.com?subject=Legal" className="hover:text-azure">Legal</a>
               <span>© 2026 Carlom</span>
             </div>
           </div>

@@ -377,7 +377,7 @@ function GlobeSection() {
   }, [progress]);
 
   return (
-    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight:'120vh', borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5}}>
+    <section id="global" ref={wrapRef} className="section-overlap relative bg-shark-950 overflow-hidden" style={{minHeight: typeof window !== 'undefined' && window.innerWidth < 768 ? '100vh' : '120vh', borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:5}}>
       {/* Subtle transition gradient from ProductTypes above */}
       <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       {/* bg grid */}
@@ -404,7 +404,7 @@ function GlobeSection() {
 
           {/* Text column */}
           <div className="md:col-span-5 order-2 relative">
-            <Reveal><Eyebrow className="mb-6">02 · Global Presence</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6">04 · Global Presence</Eyebrow></Reveal>
             <div className="overflow-hidden mb-6">
               <Reveal clip>
                 <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.9]" style={{letterSpacing:'-0.04em'}}>

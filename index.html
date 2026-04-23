@@ -25,6 +25,10 @@
 <link rel="icon" type="image/svg+xml" href="sensara/favicon.svg" />
 <link rel="apple-touch-icon" href="sensara/apple-touch-icon.png" />
 
+<!-- Preload critical assets -->
+<link rel="preload" href="sensara/hero.mp4" as="video" type="video/mp4" />
+<link rel="preload" href="sensara/images/suede-texture.jpg" as="image" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -37,6 +41,33 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 <link rel="stylesheet" href="styles.css" />
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Sensara",
+  "description": "Premium suede material for automotive interiors by Carlom",
+  "url": "https://sensara.vercel.app",
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "Carlom",
+    "url": "https://carlom.com",
+    "foundingDate": "1966"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "marketing@carlom.com",
+    "contactType": "sales"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "PT",
+    "addressRegion": "Europe"
+  }
+}
+</script>
 </head>
 <body>
 <!-- Loading screen — visible until React mounts -->
