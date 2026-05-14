@@ -23,7 +23,7 @@ function Nav() {
             <span className="absolute inset-1 bg-azure"></span>
           </span>
           <span className="font-display text-xl tracking-tight">SENSARA</span>
-          <span className="mono text-[10px] tracking-[0.25em] uppercase text-shark-400 hidden md:inline-block border-l border-white/20 pl-3 ml-1">by Carlom · est. 1966</span>
+          <span className="mono text-[10px] tracking-[0.25em] uppercase text-shark-400 hidden md:inline-block border-l border-white/20 pl-3 ml-1">a Carlom × Meisheng venture</span>
         </a>
         <div className="hidden lg:flex items-center gap-x-7 xl:gap-x-9">
           {items.map(([l,h]) => (
@@ -131,43 +131,12 @@ function Hero() {
               mixBlendMode:'overlay',
             }}/>
 
-            {/* Carlom badge — only visible after hero shrinks away from nav */}
-            <div className="absolute top-24 left-6 md:top-28 md:left-8 flex items-center gap-2 z-10 transition-opacity duration-500"
-                 style={{opacity: ease > 0.15 ? 1 : 0}}>
-              <span className="block w-4 h-4 relative">
-                <span className="absolute inset-0 border border-white/80"></span>
-                <span className="absolute inset-[3px] bg-white/80"></span>
-              </span>
-              <span className="mono text-[10px] tracking-[0.25em] uppercase text-white/80">by Carlom · est. 1966</span>
-            </div>
-
-            {/* Top-right spec chip — only after hero shrinks */}
-            <div className="absolute top-24 right-6 md:top-28 md:right-8 mono text-[10px] tracking-[0.25em] uppercase text-white/60 z-10 transition-opacity duration-500"
-                 style={{opacity: ease > 0.15 ? 1 : 0}}>
-              [ REC ] · SUEDE · LOOP
-            </div>
 
             {/* Hero text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6" style={{opacity: Math.max(0, 1 - ease * 1.4)}}>
-              <Eyebrow className="mb-6 text-white/70">A Material by Carlom</Eyebrow>
-              <h1 className="font-display text-[clamp(80px,18vw,280px)] leading-[0.85]" style={{letterSpacing:'-0.04em'}}>
-                SENSARA
+            <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16" style={{opacity: Math.max(0, 1 - ease * 1.4)}}>
+              <h1 className="font-display text-[clamp(28px,4.5vw,58px)] leading-[1.05] tracking-[-0.03em] text-white">
+                ENGINEERED FOR THE SENSES.
               </h1>
-              <div className="mt-4 flex items-center gap-4 text-white/80">
-                <span className="h-px w-12 bg-white/50"></span>
-                <span className="font-light text-lg md:text-xl tracking-wide">Premium Suede for Automotive Interiors</span>
-                <span className="h-px w-12 bg-white/50"></span>
-              </div>
-
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:gap-x-10 mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-white/60">
-                <span>260-320 gsm</span>
-                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
-                <span>Solvent Free</span>
-                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
-                <span>Up to 70% Recycled</span>
-                <span className="w-1 h-1 bg-white/40 hidden md:block"></span>
-                <span>Made in Portugal · China</span>
-              </div>
             </div>
 
             {/* Scroll indicator */}
@@ -240,12 +209,13 @@ function TechStatement() {
             <div className="md:col-span-6">
               <Reveal>
                 <Eyebrow className="mb-4">Application Map</Eyebrow>
-                <h3 className="font-display text-2xl md:text-3xl tracking-tight">Five surfaces. One material family.</h3>
+                <h3 className="font-display text-2xl md:text-3xl tracking-tight">Made to belong</h3>
               </Reveal>
             </div>
             <div className="md:col-span-5 md:col-start-8">
               <Reveal delay={100}>
-                <p className="text-sm text-shark-400 leading-relaxed">Explore each application zone. Every surface is matched to the optimal Sensara variant for its specific performance demands.</p>
+                <p className="text-sm text-white/85 leading-relaxed" style={{textWrap:'pretty'}}>Calibrated to each performance profile, the Sensara portfolio carries four distinct technologies: Air, Core, Plus, Skin. Each tuned to its application. The first microfiber-suede portfolio tailored to each surface. Considered to spec, never beyond it.</p>
+                <p className="text-sm text-shark-400 leading-relaxed mt-4" style={{textWrap:'pretty'}}>Approved against the standards an automotive interior is expected to meet.</p>
               </Reveal>
             </div>
           </div>
@@ -379,12 +349,12 @@ function TheTouch() {
           <div className="eyebrow mb-6 text-white/50">The Touch</div>
         </Reveal>
         <RevealLines stagger={0.14}>
-          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Designed to be</span></div>
-          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">Felt.</span></div>
+          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Masterclass</span></div>
+          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">in detail.</span></div>
         </RevealLines>
         <Reveal delay={200}>
           <p className="text-lg md:text-xl text-white/60 max-w-lg font-light mt-6" style={{textWrap:'pretty'}}>
-            Move your cursor across the surface. The way light shifts reveals the depth of every fiber - just like running your hand across real suede.
+            Real craft reveals itself slowly. With each movement, it tells you a little more. About its depth, about the way light shifts and highlights the hand behind it.
           </p>
         </Reveal>
       </Parallax>
@@ -666,7 +636,7 @@ function ProductTypes() {
         <div className="max-w-[1600px] mx-auto px-6 md:px-10 mb-10">
           <div className="flex items-baseline justify-between flex-wrap gap-4">
             <Reveal>
-              <p className="font-display text-xl md:text-2xl tracking-tight text-white/80">Trusted by leading automotive brands.</p>
+              <p className="font-display text-xl md:text-2xl tracking-tight text-white/80">The new standard, already in production.</p>
             </Reveal>
             <Reveal>
               <div className="eyebrow text-shark-600">Global OEM partners · 2020-present</div>

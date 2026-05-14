@@ -390,9 +390,6 @@ function GlobeSection() {
             <div className="relative w-full mx-auto globe-wrap" style={{aspectRatio:'1/1', maxWidth:'720px'}}>
               <canvas ref={canvasRef} className="w-full h-full" role="img" aria-label="Interactive 3D globe showing Sensara production locations in Portugal and China" style={{touchAction:'none'}}/>
               {/* Labels */}
-              <div className="absolute top-2 left-2 mono text-[10px] tracking-[0.25em] uppercase text-white/40">
-                fig.02 · joint venture network
-              </div>
               <div className="absolute bottom-2 right-2 mono text-[10px] tracking-[0.25em] uppercase text-white/40">
                 scroll to rotate ↻
               </div>
@@ -404,7 +401,7 @@ function GlobeSection() {
 
           {/* Text column */}
           <div className="md:col-span-5 order-2 relative">
-            <Reveal><Eyebrow className="mb-6">Global Presence</Eyebrow></Reveal>
+            <Reveal><Eyebrow className="mb-6">Global Footprint</Eyebrow></Reveal>
             <div className="overflow-hidden mb-6">
               <Reveal clip>
                 <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.9]" style={{letterSpacing:'-0.04em'}}>
@@ -414,37 +411,8 @@ function GlobeSection() {
             </div>
             <Reveal delay={150}>
               <p className="text-base md:text-lg text-white/85 leading-relaxed mb-6" style={{textWrap:'pretty'}}>
-                A strategic joint venture combining Carlom's European automotive expertise with Meisheng's leadership in microfiber and suede technologies. Production facilities in both Europe and China enable flexible manufacturing, optimized supply chains, and consistent quality across regions.
+                Sensara controls every step from microfiber to surface finishing. Production runs in Portugal and in China, with lamination, embossing, perforation, and integrated lighting handled in-house. Two continents of capacity, one standard of finish, no external dependencies.
               </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="eyebrow mb-3">One Product · Two Brands</div>
-                <div className="font-display text-xl md:text-2xl" style={{letterSpacing:'-0.02em'}}>
-                  Sensara <span className="text-shark-500">in Europe.</span><br/>
-                  MS Suede <span className="text-shark-500">in China.</span>
-                </div>
-              </div>
-            </Reveal>
-            <Reveal delay={450}>
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="border border-white/10 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-azure pulse-dot"></span>
-                    <span className="eyebrow">HQ · Portugal</span>
-                  </div>
-                  <div className="font-display text-lg">Carlom</div>
-                  <div className="text-xs text-shark-400">Est. 1966 · Europe</div>
-                </div>
-                <div className="border border-white/10 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-azure pulse-dot"></span>
-                    <span className="eyebrow">JV · China</span>
-                  </div>
-                  <div className="font-display text-lg">Meisheng</div>
-                  <div className="text-xs text-shark-400">Microfiber leader</div>
-                </div>
-              </div>
             </Reveal>
           </div>
         </div>
