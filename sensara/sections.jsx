@@ -133,7 +133,7 @@ function Hero() {
 
 
             {/* Hero text */}
-            <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16" style={{opacity: Math.max(0, 1 - ease * 1.4)}}>
+            <div className="absolute inset-0 flex flex-col justify-end px-6 md:px-16 pb-[18vh]" style={{opacity: Math.max(0, 1 - ease * 1.4)}}>
               <h1 className="font-display text-[clamp(30px,4.7vw,61px)] leading-[1.05] tracking-[-0.03em] text-white">
                 ENGINEERED FOR THE SENSES.
               </h1>
