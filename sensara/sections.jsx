@@ -170,22 +170,21 @@ function TechStatement() {
         <div className="grid md:grid-cols-12 gap-10 items-end mb-20">
           <div className="md:col-span-5">
             <Reveal><Eyebrow className="mb-6">Technology</Eyebrow></Reveal>
-            <h2 className="sr-only">Engineered for the Senses</h2>
+            <h2 className="sr-only">Made to belong</h2>
             <RevealLines stagger={0.14}>
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered</span></div>
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">for the</span></div>
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block text-azure" role="presentation">Senses.</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Made to</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block text-azure" role="presentation">belong.</span></div>
             </RevealLines>
           </div>
           <div className="md:col-span-6 md:col-start-7">
             <Reveal delay={150}>
               <p className="text-xl md:text-2xl font-light leading-[1.45] text-white/85 mb-6" style={{textWrap:'pretty'}}>
-                Sensara is a premium suede material engineered to elevate the sensory experience of automotive interior surfaces. Designed for performance, aesthetics, and sustainability - it delivers a refined touch while meeting the demanding technical requirements of modern vehicle interiors.
+                Calibrated to each performance profile, the Sensara portfolio carries four distinct technologies: Air, Core, Plus, Skin. Each tuned to its application. The first microfiber-suede portfolio tailored to each surface. Considered to spec, never beyond it.
               </p>
             </Reveal>
             <Reveal delay={300}>
               <p className="text-base md:text-lg text-shark-400 leading-relaxed" style={{textWrap:'pretty'}}>
-                Produced using sustainable manufacturing practices with a low carbon footprint, Sensara can be manufactured using recycled fibers.
+                Approved against the standards an automotive interior is expected to meet.
               </p>
             </Reveal>
           </div>
