@@ -421,7 +421,7 @@ function GlobeSection() {
       {/* Certifications — integrated into globe section */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 pb-16 md:pb-24">
         <Reveal>
-          <div className="border-t border-white/[0.06] pt-12 md:pt-16">
+          <div className="pt-12 md:pt-16">
             <div className="grid grid-cols-3 md:grid-cols-6 gap-8 md:gap-6 items-start justify-items-center">
               {[
                 { id:'iatf', name:'IATF 16949', sub:'Quality Austria', icon: <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="64" height="64" rx="4" fill="#C41E3A"/><text x="40" y="54" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="900" fontSize="42" fill="#fff">Q</text></svg> },
