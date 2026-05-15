@@ -104,6 +104,21 @@ body { font-family: 'Poppins', system-ui, sans-serif; font-weight: 300; -webkit-
 .text-shark-300 { color: var(--shark-300); }
 .text-shark-200 { color: var(--shark-200); }
 
+/* Certification bar — grayscale to color on hover */
+.cert-logo {
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.5;
+  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s ease;
+}
+.cert-item:hover .cert-logo {
+  filter: grayscale(0) brightness(1);
+  opacity: 1;
+  transform: scale(1.08);
+}
+.cert-item:hover .cert-label {
+  color: rgba(255,255,255,0.8) !important;
+}
+
 /* No select on decorative */
 .noselect { user-select:none; -webkit-user-select:none; }
 
