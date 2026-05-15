@@ -64,7 +64,6 @@ function App() {
           <SectionEntry><TheTouch/></SectionEntry>
           <SectionEntry><ProductTypes/></SectionEntry>
           <SectionEntry><GlobeSection/></SectionEntry>
-          <SectionEntry><Certifications/></SectionEntry>
           <SectionEntry><Sustainability/></SectionEntry>
           <SectionEntry><Footer/></SectionEntry>
         </div>
