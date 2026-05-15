@@ -664,163 +664,174 @@ function ProductTypes() {
 
 /* Dead code removed: APPLICATIONS, ApplicationTile, BrandStrip */
 
-/* ————————————————— SECTION 6: SUSTAINABILITY ————————————————— */
-function Sustainability() {
+/* ————————————————— CARBON RECEIPT (V1 - BARS) ————————————————— */
+function CarbonReceipt({ cert, delay = 0 }) {
+  const numRef = useRef(null);
   const barRef = useRef(null);
 
-  // Animate the 70% bar on scroll
   useEffect(() => {
-    const el = barRef.current;
-    if (!el || !window.gsap) return;
+    if (!window.gsap) return;
     const gsap = window.gsap;
+    const numEl = numRef.current;
+    const barEl = barRef.current;
+    if (!numEl || !barEl) return;
 
-    gsap.set(el, { width: '0%' });
-
-    const tl = gsap.to(el, {
-      width: '70%',
-      duration: 1,
+    const counter = { v: 0 };
+    gsap.set(numEl, { textContent: '0.00' });
+    const numTl = gsap.to(counter, {
+      v: cert.value,
+      duration: 1.2,
       ease: 'power2.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 90%',
-        end: 'top 50%',
-        scrub: 0.8,
-      },
+      onUpdate: () => { numEl.textContent = counter.v.toFixed(2); },
+      scrollTrigger: { trigger: numEl, start: 'top 90%', end: 'top 50%', scrub: 0.8 },
+    });
+
+    gsap.set(barEl, { width: '0%' });
+    const barTl = gsap.to(barEl, {
+      width: cert.value + '%',
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: barEl, start: 'top 90%', end: 'top 50%', scrub: 0.8 },
     });
 
     return () => {
-      if (tl.scrollTrigger) tl.scrollTrigger.kill();
-      tl.kill();
+      [numTl, barTl].forEach((tl) => {
+        if (tl.scrollTrigger) tl.scrollTrigger.kill();
+        tl.kill();
+      });
     };
-  }, []);
+  }, [cert.value]);
+
+  return (
+    <Reveal delay={delay}>
+      <div className="relative bg-shark-50 border border-black/10 p-6 md:p-7" style={{borderRadius:'12px'}}>
+        {/* Notched corner - stamp / label read */}
+        <div className="absolute -top-px -right-px w-6 h-6 bg-white border-l border-b border-black/10" style={{borderBottomLeftRadius:'6px'}} aria-hidden="true"/>
+
+        {/* Header: cert ID + validity */}
+        <div className="flex items-center justify-between mono text-[10px] tracking-[0.18em] uppercase text-shark-500 pr-8">
+          <span>Cert · {cert.id}</span>
+          <span>Valid 2026</span>
+        </div>
+
+        <div className="h-px bg-black/10 my-4"/>
+
+        {/* Product + spec */}
+        <div className="font-display text-shark-950" style={{fontSize:'18px', fontWeight:600, letterSpacing:'-0.015em', lineHeight:1.2}}>
+          {cert.product}
+        </div>
+        <div className="text-xs text-shark-600 mt-0.5">{cert.spec}</div>
+
+        {/* Carbon figure */}
+        <div className="mt-5 flex items-baseline gap-2.5">
+          <span ref={numRef} className="font-display text-azure" style={{fontSize:'clamp(48px, 6vw, 80px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:0.95, fontVariantNumeric:'tabular-nums'}}>
+            {cert.value.toFixed(2)}
+          </span>
+          <span className="mono text-[10px] tracking-[0.18em] uppercase text-shark-500 pb-1.5">
+            kgCO₂e / kg
+          </span>
+        </div>
+
+        {/* Magnitude bar */}
+        <div className="mt-4">
+          <div className="relative h-2 bg-shark-100 overflow-hidden" style={{borderRadius:'4px', backgroundImage:'repeating-linear-gradient(45deg, rgba(38,109,241,0.06) 0 2px, transparent 2px 4px)'}}>
+            <div ref={barRef} className="absolute top-0 left-0 bottom-0 bg-azure" style={{width:'0%', borderRadius:'4px', boxShadow:'0 0 12px rgba(38,109,241,0.35)'}}/>
+          </div>
+          <div className="flex justify-between mt-1.5 mono text-[9px] tracking-[0.18em] uppercase text-shark-500">
+            <span>0</span>
+            <span>Per 1 kg of fabric, cradle to gate</span>
+            <span>100</span>
+          </div>
+        </div>
+
+        <div className="h-px bg-black/10 mt-4 mb-3"/>
+
+        {/* Footer: registrar + stamp */}
+        <div className="flex justify-between mono text-[10px] tracking-[0.18em] uppercase text-shark-500">
+          <span>Audited · Bureau Veritas · 2024</span>
+          <span className="flex items-center gap-1.5" style={{color:'var(--success)'}}>
+            <span className="inline-block w-1.5 h-1.5 rounded-full" style={{background:'var(--success)'}}/>
+            Certified
+          </span>
+        </div>
+      </div>
+    </Reveal>
+  );
+}
+
+/* ————————————————— SECTION 6: SUSTAINABILITY ————————————————— */
+function Sustainability() {
+  const certs = [
+    { id:'STRZ-BV2024008', product:'Sensara Skin', spec:'220 gsm, weft-knitted', value:18.44 },
+    { id:'STRZ-BV2024007', product:'Sensara Plus', spec:'350 gsm, non-woven microfiber', value:93.42 },
+  ];
 
   const pillars = [
     { n:'01', title:'Recycled Fibers', desc:'Up to 70% recycled content across the Sensara portfolio. Turning waste into premium material.',
-      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M7 21l4-7h6l4 7"/><path d="M14 3v11"/><circle cx="14" cy="14" r="3"/><path d="M5 14a9 9 0 1 1 18 0" strokeDasharray="3,2"/></svg> },
+      icon: <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M7 21l4-7h6l4 7"/><path d="M14 3v11"/><circle cx="14" cy="14" r="3"/><path d="M5 14a9 9 0 1 1 18 0" strokeDasharray="3,2"/></svg> },
     { n:'02', title:'Solvent Free', desc:'100% solvent-free production. Water-based processes where applicable. Zero harmful emissions.',
-      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 3l-5 10a6 6 0 1 0 10 0L14 3z"/><path d="M11 18h6" strokeDasharray="2,2"/></svg> },
+      icon: <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 3l-5 10a6 6 0 1 0 10 0L14 3z"/><path d="M11 18h6" strokeDasharray="2,2"/></svg> },
     { n:'03', title:'Mono-component Recyclability', desc:'Sensara Air and Core are 100% mono-component (PES), ensuring full recyclability at vehicle end-of-life. Circular by design.',
-      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 5l6 4-6 4"/><path d="M20 15l-6 4 6 4"/><path d="M14 9v10"/><circle cx="14" cy="14" r="11"/></svg> },
+      icon: <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 5l6 4-6 4"/><path d="M20 15l-6 4 6 4"/><path d="M14 9v10"/><circle cx="14" cy="14" r="11"/></svg> },
     { n:'04', title:'Low Carbon Footprint', desc:'Sustainable manufacturing practices that minimize environmental impact throughout the entire production cycle.',
-      icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 22C6 14 14 6 22 6c0 8-8 16-16 16z"/><path d="M14 14l-4 4"/><path d="M14 14l4-4" strokeDasharray="2,2"/></svg> },
+      icon: <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 22C6 14 14 6 22 6c0 8-8 16-16 16z"/><path d="M14 14l-4 4"/><path d="M14 14l4-4" strokeDasharray="2,2"/></svg> },
   ];
+
   return (
     <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6, color:'#262626'}}>
       {/* Transition gradient from Globe above */}
       <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
-          {/* Image col */}
+
+          {/* Left column: Carbon Receipts */}
           <div className="md:col-span-5">
             <Reveal>
-              <Parallax speed={-0.08} className="relative aspect-[4/5] overflow-hidden" style={{background:'#0a0f0a', borderRadius:'16px'}}>
-                {/* Abstract fiber generative visual */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
-                  <defs>
-                    <linearGradient id="fiberGrad1" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#1a6b3c" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#0d3d22" stopOpacity="0.3"/>
-                    </linearGradient>
-                    <linearGradient id="fiberGrad2" x1="0" y1="1" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#266DF1" stopOpacity="0.15"/>
-                      <stop offset="100%" stopColor="#1a6b3c" stopOpacity="0.4"/>
-                    </linearGradient>
-                    <filter id="fiberBlur">
-                      <feGaussianBlur stdDeviation="1.5"/>
-                    </filter>
-                  </defs>
-                  {/* Organic fiber strands */}
-                  {[...Array(30)].map((_, i) => {
-                    const x1 = (i * 37 + 10) % 400;
-                    const y1 = (i * 53) % 500;
-                    const cx1 = x1 + Math.sin(i) * 80;
-                    const cy1 = y1 + 60;
-                    const cx2 = x1 + Math.cos(i) * 60;
-                    const cy2 = y1 + 120;
-                    const x2 = (x1 + 40 + i * 11) % 400;
-                    const y2 = Math.min(500, y1 + 150 + (i % 5) * 30);
-                    return (
-                      <path key={i}
-                        d={`M${x1} ${y1} C${cx1} ${cy1} ${cx2} ${cy2} ${x2} ${y2}`}
-                        fill="none"
-                        stroke={i % 3 === 0 ? '#1a6b3c' : i % 3 === 1 ? '#266DF1' : '#2a8a4e'}
-                        strokeWidth={0.8 + (i % 4) * 0.4}
-                        strokeOpacity={0.15 + (i % 5) * 0.06}
-                        filter={i % 4 === 0 ? 'url(#fiberBlur)' : undefined}
-                      />
-                    );
-                  })}
-                  {/* Circular nodes — recycled fiber cross-sections */}
-                  {[...Array(12)].map((_, i) => (
-                    <circle key={`c${i}`}
-                      cx={(i * 67 + 30) % 380}
-                      cy={(i * 89 + 40) % 480}
-                      r={3 + (i % 4) * 2}
-                      fill="none"
-                      stroke={i % 2 === 0 ? '#1a6b3c' : '#266DF1'}
-                      strokeWidth="0.6"
-                      strokeOpacity={0.2 + (i % 3) * 0.1}
-                    />
-                  ))}
-                  {/* Grain overlay */}
-                  <rect width="400" height="500" fill="url(#fiberGrad2)" opacity="0.5"/>
-                </svg>
-                {/* Center label */}
-                <div className="absolute inset-0 flex items-end p-8">
-                  <div>
-                    <div className="mono text-[10px] tracking-[0.25em] uppercase text-white/30 mb-2">[ recycled fiber · macro ]</div>
-                    <div className="font-display text-3xl text-white/60 tracking-tight" style={{letterSpacing:'-0.02em'}}>70% Recycled</div>
-                    <div className="text-sm text-white/30 mt-1">PES fiber cross-section · 200× magnification</div>
-                  </div>
-                </div>
-                {/* Radial glow */}
-                <div className="absolute inset-0" style={{background:'radial-gradient(ellipse at 30% 40%, rgba(26,107,60,0.15), transparent 60%)'}}/>
-                <div className="absolute inset-0" style={{background:'radial-gradient(ellipse at 70% 70%, rgba(38,109,241,0.08), transparent 50%)'}}/>
-                {/* stats bottom-left */}
-                <div className="absolute left-6 bottom-6 right-6 bg-white p-5 border border-black/5">
-                  <div className="eyebrow mb-2" style={{color:'#737373'}}>Recycled Content</div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="mono text-xs tracking-[0.2em] uppercase text-shark-600 mb-2">UP TO</span>
-                    <span className="font-display text-6xl" style={{color:'var(--azure)', letterSpacing:'-0.04em', fontWeight:900}}>70%</span>
-                  </div>
-                  <div className="text-sm text-shark-700 mt-2 mb-3">Recycled content across the Sensara portfolio</div>
-                  <div className="h-1.5 bg-shark-100 relative overflow-hidden">
-                    <div ref={barRef} className="absolute inset-y-0 left-0" style={{width:'0%', background:'var(--azure)'}}></div>
-                  </div>
-                </div>
-              </Parallax>
+              <Eyebrow className="mb-4" style={{color:'#737373'}}>Carbon footprints, audited</Eyebrow>
+            </Reveal>
+
+            <div className="flex flex-col gap-3.5">
+              {certs.map((cert, i) => (
+                <CarbonReceipt key={cert.id} cert={cert} delay={i * 120}/>
+              ))}
+            </div>
+
+            <Reveal delay={300}>
+              <p className="mt-6 text-xs text-shark-600 leading-relaxed" style={{textWrap:'pretty'}}>
+                Per kilogram of finished fabric, cradle to gate. Audited and certified by Bureau Veritas under ZGCA-JSGF. Carbon footprints for Sensara Air and Sensara Core are in qualification.
+              </p>
             </Reveal>
           </div>
 
-          {/* Content col */}
+          {/* Right column: headline + pillars + quote */}
           <div className="md:col-span-7">
             <Reveal><Eyebrow className="mb-6" style={{color:'#737373'}}>Sustainability</Eyebrow></Reveal>
             <RevealLines stagger={0.14} className="mb-8">
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Engineered with</span></div>
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation" style={{color:'var(--success)'}}>Purpose.</span></div>
+              <div><span className="font-display block" style={{fontSize:'clamp(40px, 5.5vw, 84px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:0.95}} role="presentation">Sustained with</span></div>
+              <div><span className="font-display block" style={{fontSize:'clamp(40px, 5.5vw, 84px)', fontWeight:900, letterSpacing:'-0.04em', lineHeight:0.95, color:'var(--success)'}} role="presentation">Purpose.</span></div>
             </RevealLines>
 
-            <div className="grid sm:grid-cols-2 gap-px bg-black/10 mt-10">
-              {pillars.map((p,i)=>(
-                <Reveal key={p.n} delay={i*100}>
-                  <div className="bg-white p-6 md:p-8 h-full pillar-card cursor-default">
-                    <div className="flex items-center justify-between mb-4">
+            <div className="grid sm:grid-cols-2 gap-px bg-black/10 mt-9">
+              {pillars.map((p, i) => (
+                <Reveal key={p.n} delay={i * 100}>
+                  <div className="bg-white p-6 md:p-7 h-full pillar-card cursor-default">
+                    <div className="flex items-center justify-between mb-3.5">
                       <div className="flex items-baseline gap-3">
-                        <span className="font-display text-3xl tracking-tight" style={{color:'var(--success)'}}>{p.n}</span>
+                        <span className="font-display tracking-tight" style={{fontSize:'24px', color:'var(--success)', fontWeight:900}}>{p.n}</span>
                         <span className="h-px flex-1 bg-black/10" style={{minWidth:'20px'}}></span>
                       </div>
                       <div className="pillar-icon" style={{color:'var(--success)'}}>{p.icon}</div>
                     </div>
-                    <h3 className="font-display text-xl md:text-2xl tracking-tight mb-3">{p.title}</h3>
-                    <p className="text-sm text-shark-700 leading-relaxed" style={{textWrap:'pretty'}}>{p.desc}</p>
+                    <h3 className="font-display tracking-tight mb-2.5" style={{fontSize:'19px', fontWeight:700, letterSpacing:'-0.015em', lineHeight:1.25}}>{p.title}</h3>
+                    <p className="text-shark-700 leading-relaxed" style={{fontSize:'13px', textWrap:'pretty'}}>{p.desc}</p>
                   </div>
                 </Reveal>
               ))}
             </div>
 
             <Reveal delay={400}>
-              <div className="mt-12 pt-10 border-t border-black/10">
-                <p className="font-light text-xl md:text-2xl tracking-tight text-shark-950 leading-[1.4]" style={{textWrap:'pretty'}}>
+              <div className="mt-10 pt-8 border-t border-black/10">
+                <p className="font-light tracking-tight text-shark-950 leading-[1.45]" style={{fontSize:'clamp(18px, 1.6vw, 22px)', textWrap:'pretty'}}>
                   <span className="text-shark-400">"</span>Sensara empowers designers and OEMs to create distinctive, high-value interiors without compromising sustainability or performance.<span className="text-shark-400">"</span>
                 </p>
               </div>
