@@ -349,7 +349,7 @@ function TheTouch() {
         </Reveal>
         <RevealLines stagger={0.14}>
           <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Masterclass</span></div>
-          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">in detail.</span></div>
+          <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">in detail</span></div>
         </RevealLines>
         <Reveal delay={200}>
           <p className="text-lg md:text-xl text-white/60 max-w-lg font-light mt-6" style={{textWrap:'pretty'}}>
