@@ -672,8 +672,8 @@ function Certifications() {
       name: 'IATF 16949',
       sub: 'Quality Austria',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="8" y="8" width="64" height="64" rx="4" fill="#C41E3A"/>
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="128" height="128" rx="4" fill="#C41E3A"/>
           <text x="40" y="54" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="900" fontSize="42" fill="#fff">Q</text>
         </svg>
       ),
@@ -683,7 +683,7 @@ function Certifications() {
       name: 'ISO 9001',
       sub: 'Quality Management',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="40" cy="40" r="32" stroke="#2E7D32" strokeWidth="4" fill="none"/>
           <circle cx="40" cy="40" r="22" stroke="#2E7D32" strokeWidth="2" fill="none"/>
           <text x="40" y="36" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="700" fontSize="13" fill="#2E7D32">ISO</text>
@@ -696,7 +696,7 @@ function Certifications() {
       name: 'GRS',
       sub: 'Global Recycled Standard',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M40 12 C55 12 66 23 66 38 L58 38 L68 52 L78 38 L70 38 C70 20 57 8 40 8" fill="#0277BD"/>
           <path d="M40 68 C25 68 14 57 14 42 L22 42 L12 28 L2 42 L10 42 C10 60 23 72 40 72" fill="#0277BD"/>
           <text x="40" y="44" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="700" fontSize="14" fill="#0277BD">GRS</text>
@@ -708,7 +708,7 @@ function Certifications() {
       name: 'OEKO-TEX',
       sub: 'Standard 100',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M40 8 C40 8 58 20 58 42 C58 56 50 68 40 72 C30 68 22 56 22 42 C22 20 40 8 40 8Z" fill="#009688"/>
           <text x="40" y="38" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="800" fontSize="10" fill="#fff" letterSpacing="0.5">OEKO</text>
           <text x="40" y="50" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="800" fontSize="10" fill="#fff" letterSpacing="0.5">TEX</text>
@@ -721,7 +721,7 @@ function Certifications() {
       name: 'Carbon Footprint',
       sub: 'Product 220 gsm',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="40" cy="40" r="30" stroke="#43A047" strokeWidth="3" fill="none"/>
           <ellipse cx="40" cy="40" rx="30" ry="12" stroke="#43A047" strokeWidth="1.5" fill="none"/>
           <ellipse cx="40" cy="40" rx="12" ry="30" stroke="#43A047" strokeWidth="1.5" fill="none"/>
@@ -737,7 +737,7 @@ function Certifications() {
       name: 'Carbon Footprint',
       sub: 'Product 350 gsm',
       icon: (
-        <svg viewBox="0 0 80 80" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 80 80" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="40" cy="40" r="30" stroke="#43A047" strokeWidth="3" fill="none"/>
           <ellipse cx="40" cy="40" rx="30" ry="12" stroke="#43A047" strokeWidth="1.5" fill="none"/>
           <ellipse cx="40" cy="40" rx="12" ry="30" stroke="#43A047" strokeWidth="1.5" fill="none"/>
@@ -751,18 +751,10 @@ function Certifications() {
   ];
 
   return (
-    <section className="section-overlap relative bg-shark-950 py-14 md:py-20 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:6}}>
+    <section className="section-overlap relative bg-shark-950 py-10 md:py-14 overflow-hidden" style={{borderRadius:'16px 16px 0 0', marginTop:'-16px', zIndex:6}}>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-        <div className="flex items-center justify-between flex-wrap gap-4 mb-10">
-          <Reveal>
-            <Eyebrow>Certifications</Eyebrow>
-          </Reveal>
-          <Reveal>
-            <div className="eyebrow text-shark-600">Independently verified · Global standards</div>
-          </Reveal>
-        </div>
         <Reveal>
-          <div className="border-y border-white/[0.06] py-10">
+          <div className="py-8">
             <div className="grid grid-cols-3 md:grid-cols-6 gap-8 md:gap-6 items-start justify-items-center">
               {certs.map(cert => (
                 <a key={cert.id} href="#" className="cert-item flex flex-col items-center gap-3 group cursor-pointer noselect" title={`${cert.name} - ${cert.sub}`}>
@@ -828,9 +820,9 @@ function Sustainability() {
       icon: <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 22C6 14 14 6 22 6c0 8-8 16-16 16z"/><path d="M14 14l-4 4"/><path d="M14 14l4-4" strokeDasharray="2,2"/></svg> },
   ];
   return (
-    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'32px 32px 0 0', marginTop:'-32px', zIndex:7, color:'#262626'}}>
-      {/* Transition gradient from dark Globe above */}
-      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.18) 0%, transparent 100%)', borderRadius:'32px 32px 0 0'}}/>
+    <section id="sustainability" className="section-overlap relative bg-white text-shark-950 py-32 md:py-40 overflow-hidden" style={{borderRadius:'16px 16px 0 0', marginTop:'-16px', zIndex:7, color:'#262626'}}>
+      {/* Transition gradient from Certifications above */}
+      <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none z-[1]" style={{background:'linear-gradient(180deg, rgba(38,38,38,0.1) 0%, transparent 100%)', borderRadius:'16px 16px 0 0'}}/>
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           {/* Image col */}
