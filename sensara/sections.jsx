@@ -169,7 +169,6 @@ function TechStatement() {
         {/* Header */}
         <div className="grid md:grid-cols-12 gap-10 items-end mb-20">
           <div className="md:col-span-5">
-            <Reveal><Eyebrow className="mb-6">Technology</Eyebrow></Reveal>
             <h2 className="sr-only">Made to belong</h2>
             <RevealLines stagger={0.14}>
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Made to</span></div>
@@ -330,9 +329,6 @@ function TheTouch() {
 
       {/* Center content — parallax for depth */}
       <Parallax speed={-0.06} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-20 px-6">
-        <Reveal>
-          <div className="eyebrow mb-6 text-white/50">The Touch</div>
-        </Reveal>
         <RevealLines stagger={0.14}>
           <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-white block" role="presentation">Masterclass</span></div>
           <div><span className="font-display text-[clamp(36px,6vw,88px)] leading-[0.95] tracking-[-0.04em] text-azure block" role="presentation">in detail</span></div>
