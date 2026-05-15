@@ -704,18 +704,7 @@ function CarbonReceipt({ cert, delay = 0 }) {
 
   return (
     <Reveal delay={delay}>
-      <div className="relative bg-shark-50 border border-black/10 p-6 md:p-7" style={{borderRadius:'12px'}}>
-        {/* Notched corner - stamp / label read */}
-        <div className="absolute -top-px -right-px w-6 h-6 bg-white border-l border-b border-black/10" style={{borderBottomLeftRadius:'6px'}} aria-hidden="true"/>
-
-        {/* Header: cert ID + validity */}
-        <div className="flex items-center justify-between mono text-[10px] tracking-[0.18em] uppercase text-shark-500 pr-8">
-          <span>Cert · {cert.id}</span>
-          <span>Valid 2026</span>
-        </div>
-
-        <div className="h-px bg-black/10 my-4"/>
-
+      <div className="bg-shark-50 border border-black/10 p-6 md:p-7" style={{borderRadius:'12px'}}>
         {/* Product + spec */}
         <div className="font-display text-shark-950" style={{fontSize:'18px', fontWeight:600, letterSpacing:'-0.015em', lineHeight:1.2}}>
           {cert.product}
