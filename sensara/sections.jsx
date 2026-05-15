@@ -173,7 +173,7 @@ function TechStatement() {
             <h2 className="sr-only">Made to belong</h2>
             <RevealLines stagger={0.14}>
               <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block" role="presentation">Made to</span></div>
-              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block text-azure" role="presentation">belong.</span></div>
+              <div><span className="font-display text-[clamp(44px,7vw,104px)] leading-[0.9] tracking-[-0.04em] block text-azure" role="presentation">belong</span></div>
             </RevealLines>
           </div>
           <div className="md:col-span-6 md:col-start-7">
