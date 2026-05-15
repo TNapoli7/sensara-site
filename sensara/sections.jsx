@@ -204,20 +204,6 @@ function TechStatement() {
 
         {/* Interior application map with real images */}
         <div id="applications" className="mt-20 md:mt-28">
-          <div className="grid md:grid-cols-12 gap-8 items-end mb-10">
-            <div className="md:col-span-6">
-              <Reveal>
-                <Eyebrow className="mb-4">Application Map</Eyebrow>
-                <h3 className="font-display text-2xl md:text-3xl tracking-tight">Made to belong</h3>
-              </Reveal>
-            </div>
-            <div className="md:col-span-5 md:col-start-8">
-              <Reveal delay={100}>
-                <p className="text-sm text-white/85 leading-relaxed" style={{textWrap:'pretty'}}>Calibrated to each performance profile, the Sensara portfolio carries four distinct technologies: Air, Core, Plus, Skin. Each tuned to its application. The first microfiber-suede portfolio tailored to each surface. Considered to spec, never beyond it.</p>
-                <p className="text-sm text-shark-400 leading-relaxed mt-4" style={{textWrap:'pretty'}}>Approved against the standards an automotive interior is expected to meet.</p>
-              </Reveal>
-            </div>
-          </div>
           <InteriorHotspots active={hover} setActive={setHover}/>
           {/* Zone list below image */}
           <div className="mt-4">
